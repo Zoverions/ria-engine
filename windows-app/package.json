@@ -1,0 +1,81 @@
+{
+  "name": "ria-trading-desktop",
+  "version": "1.0.0",
+  "description": "RIA Trading Desktop - Complete Windows Trading Application",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --dev",
+    "build": "electron-builder",
+    "build:win": "electron-builder --win",
+    "build:win32": "electron-builder --win --ia32",
+    "build:win64": "electron-builder --win --x64",
+    "pack": "electron-builder --dir",
+    "dist": "npm run build",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "build": {
+    "appId": "com.ria.trading-desktop",
+    "productName": "RIA Trading Desktop",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "main.js",
+      "preload.js",
+      "renderer/**/*",
+      "assets/**/*",
+      "node_modules/**/*",
+      "../ria-engine-v2/**/*"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": ["x64", "ia32"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64", "ia32"]
+        }
+      ],
+      "icon": "assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "RIA Trading Desktop"
+    },
+    "portable": {
+      "artifactName": "RIA-Trading-Desktop-Portable.exe"
+    }
+  },
+  "keywords": [
+    "trading",
+    "crypto",
+    "ethereum",
+    "wallet",
+    "desktop",
+    "financial-metrics"
+  ],
+  "author": "Zoverions",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "electron": "^27.0.0",
+    "electron-builder": "^24.6.4"
+  },
+  "dependencies": {
+    "ethers": "^5.7.2",
+    "crypto-js": "^4.1.1",
+    "node-fetch": "^3.3.2",
+    "ws": "^8.14.2",
+    "electron-store": "^8.1.0",
+    "axios": "^1.5.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
