@@ -7,22 +7,58 @@
                         </div>
                     </div>
 
-                    <div class=\"card enhanced-bot\">
-                        <div class=\"card-header\">
-                            <h3>Enhanced Trading Bot</h3>
-                            <i class=\"fas fa-robot\"></i>
+                    <div class="card ria-enhanced-bot">
+                        <div class="card-header">
+                            <h3>🧠 RIA Enhanced Trading Bot</h3>
+                            <i class="fas fa-brain"></i>
                         </div>
-                        <div class=\"card-content\">
-                            <div class=\"bot-status\">
-                                <div class=\"status-indicator\" id=\"bot-status\">Stopped</div>
-                                <span id=\"bot-status-text\">90-Day Analysis Ready</span>
+                        <div class="card-content">
+                            <div class="bot-status">
+                                <div class="status-indicator" id="ria-bot-status">Stopped</div>
+                                <span id="ria-bot-status-text">365+ Day Analysis Ready</span>
                             </div>
-                            <div class=\"bot-controls\">
-                                <button class=\"btn btn-success\" id=\"start-enhanced-bot-btn\">Start Enhanced Bot</button>
-                                <button class=\"btn btn-danger\" id=\"stop-enhanced-bot-btn\" style=\"display: none;\">Stop Bot</button>
+                            
+                            <div class="data-progress" id="data-progress">
+                                <div class="progress-header">
+                                    <span>Historical Data Loading</span>
+                                    <span id="data-percentage">0%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+                                </div>
+                                <div class="data-stages">
+                                    <span class="stage-indicator" id="immediate-stage">Immediate (7d)</span>
+                                    <span class="stage-indicator" id="recent-stage">Recent (30d)</span>
+                                    <span class="stage-indicator" id="extended-stage">Extended (90d)</span>
+                                    <span class="stage-indicator" id="comprehensive-stage">Comprehensive (365d)</span>
+                                </div>
                             </div>
-                            <div class=\"bot-info\">
-                                <small>Uses 90 days of historical data with technical analysis</small>
+                            
+                            <div class="data-stats" id="data-stats">
+                                <div class="stat-item">
+                                    <span class="stat-label">Data Points:</span>
+                                    <span class="stat-value" id="total-data-points">0</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Memory Usage:</span>
+                                    <span class="stat-value" id="memory-usage">0 MB</span>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-label">Market Fracture Index:</span>
+                                    <span class="stat-value" id="market-fracture-index">0.00</span>
+                                </div>
+                            </div>
+                            
+                            <div class="bot-controls">
+                                <button class="btn btn-success" id="start-ria-bot-btn">Start RIA Bot</button>
+                                <button class="btn btn-danger" id="stop-ria-bot-btn" style="display: none;">Stop Bot</button>
+                                <button class="btn btn-secondary" id="refresh-data-btn">Refresh Data</button>
+                            </div>
+                            
+                            <div class="bot-info">
+                                <small>🚀 Uses up to 730 days of validated historical data with RIA Engine v2.1</small>
+                                <br>
+                                <small>📊 Progressive loading: 7d → 90d → 365d+ for optimal predictions</small>
                             </div>
                         </div>
                     </div>

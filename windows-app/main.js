@@ -100,6 +100,21 @@ function createMenu() {
       label: 'Trading',
       submenu: [
         {
+          label: 'Start RIA Enhanced Bot',
+          accelerator: 'CmdOrCtrl+R',
+          click: () => {
+            mainWindow.webContents.send('menu-action', 'start-ria-bot');
+          }
+        },
+        {
+          label: 'Stop RIA Bot',
+          accelerator: 'CmdOrCtrl+Shift+R',
+          click: () => {
+            mainWindow.webContents.send('menu-action', 'stop-ria-bot');
+          }
+        },
+        { type: 'separator' },
+        {
           label: 'Start Trading',
           accelerator: 'CmdOrCtrl+T',
           click: () => {
@@ -111,6 +126,14 @@ function createMenu() {
           accelerator: 'CmdOrCtrl+Shift+T',
           click: () => {
             mainWindow.webContents.send('menu-action', 'stop-trading');
+          }
+        },
+        { type: 'separator' },
+        {
+          label: 'Refresh Historical Data',
+          accelerator: 'CmdOrCtrl+H',
+          click: () => {
+            mainWindow.webContents.send('menu-action', 'refresh-data');
           }
         },
         { type: 'separator' },
@@ -146,8 +169,8 @@ function createMenu() {
             dialog.showMessageBox(mainWindow, {
               type: 'info',
               title: 'About RIA Trading Desktop',
-              message: 'RIA Trading Desktop',
-              detail: 'Complete Windows Trading Application\\nVersion 1.0.0\\n\\nPowered by RIA Engine v2'
+              message: 'RIA Enhanced Trading Desktop',
+              detail: 'Complete Windows Trading Application\\nVersion 2.0.0\\n\\nPowered by RIA Engine v2.1\\n\\n🧠 Enhanced Historical Data System\\n📊 365+ Day Market Analysis\\n🚀 Multi-Chain DEX Trading\\n⚡ Progressive Data Loading\\n🔬 Scientific Market Analysis'
             });
           }
         },

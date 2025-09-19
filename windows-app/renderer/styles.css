@@ -742,3 +742,227 @@ body {
 ::-webkit-scrollbar-thumb:hover {
     background: #6b7280;
 }
+
+/* RIA Enhanced Bot Styles */
+.ria-enhanced-bot {
+    background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+    border: 1px solid #4c1d95;
+    box-shadow: 0 4px 12px rgba(76, 29, 149, 0.3);
+}
+
+.ria-enhanced-bot .card-header {
+    background: linear-gradient(90deg, #4c1d95 0%, #7c3aed 100%);
+    border-bottom: 1px solid #6d28d9;
+}
+
+.ria-enhanced-bot .card-header h3 {
+    background: linear-gradient(90deg, #e2e8f0, #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.data-progress {
+    margin: 16px 0;
+}
+
+.progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    font-size: 14px;
+    color: #94a3b8;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 8px;
+    background-color: #334155;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #3b82f6, #8b5cf6, #06d6a0);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.data-stages {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.stage-indicator {
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 12px;
+    background-color: #374151;
+    color: #9ca3af;
+    border: 1px solid #4b5563;
+    transition: all 0.2s ease;
+}
+
+.stage-indicator.active {
+    background-color: #065f46;
+    color: #10b981;
+    border-color: #10b981;
+    box-shadow: 0 0 8px rgba(16, 185, 129, 0.3);
+}
+
+.stage-indicator.loading {
+    background-color: #1e40af;
+    color: #60a5fa;
+    border-color: #3b82f6;
+    animation: pulse 1.5s infinite;
+}
+
+.data-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 12px;
+    margin: 16px 0;
+    padding: 12px;
+    background-color: rgba(15, 23, 42, 0.5);
+    border-radius: 8px;
+    border: 1px solid #334155;
+}
+
+.stat-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e2e8f0;
+}
+
+.stat-value#market-fracture-index {
+    background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.bot-controls {
+    display: flex;
+    gap: 8px;
+    margin: 16px 0;
+    flex-wrap: wrap;
+}
+
+.bot-controls .btn {
+    flex: 1;
+    min-width: 120px;
+}
+
+.bot-info {
+    padding: 12px;
+    background-color: rgba(59, 130, 246, 0.1);
+    border-radius: 6px;
+    border-left: 3px solid #3b82f6;
+    margin-top: 12px;
+}
+
+.bot-info small {
+    display: block;
+    color: #cbd5e1;
+    line-height: 1.4;
+}
+
+/* Status indicators for RIA bot */
+.status-indicator.ria-analyzing {
+    background-color: #7c3aed;
+    color: white;
+    animation: pulse 2s infinite;
+}
+
+.status-indicator.ria-trading {
+    background-color: #10b981;
+    color: white;
+    box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.status-indicator.ria-error {
+    background-color: #ef4444;
+    color: white;
+    animation: shake 0.5s ease-in-out;
+}
+
+/* Animations */
+@keyframes pulse {
+    0%, 100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+    50% {
+        opacity: 0.7;
+        transform: scale(1.05);
+    }
+}
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+/* Enhanced trading metrics */
+.trading-metrics.ria-enhanced {
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    border: 1px solid #059669;
+}
+
+.trading-metrics.ria-enhanced .card-header {
+    background: linear-gradient(90deg, #059669 0%, #10b981 100%);
+}
+
+/* Market fracture warning states */
+.market-fracture-warning {
+    padding: 8px 12px;
+    border-radius: 6px;
+    margin: 8px 0;
+    font-size: 12px;
+    font-weight: 500;
+    border-left: 3px solid;
+}
+
+.market-fracture-warning.gentle {
+    background-color: rgba(251, 191, 36, 0.1);
+    border-color: #fbbf24;
+    color: #fbbf24;
+}
+
+.market-fracture-warning.moderate {
+    background-color: rgba(245, 158, 11, 0.1);
+    border-color: #f59e0b;
+    color: #f59e0b;
+}
+
+.market-fracture-warning.aggressive {
+    background-color: rgba(239, 68, 68, 0.1);
+    border-color: #ef4444;
+    color: #ef4444;
+}
+
+.market-fracture-warning.critical {
+    background-color: rgba(220, 38, 127, 0.1);
+    border-color: #dc2626;
+    color: #dc2626;
+    animation: pulse 1s infinite;
+}
