@@ -15,6 +15,8 @@ import { PluginManager } from './plugins/PluginManager.js';
 import { AnalyticsEngine } from './analytics/AnalyticsEngine.js';
 import { BiometricManager } from './biometrics/BiometricManager.js';
 import { MLPersonalization } from './ml/MLPersonalization.js';
+import { MathCore } from './core/math/MathCore.js';
+import { Logger } from './core/utils/Logger.js';
 
 // Version information
 export const VERSION = '2.0.0';
@@ -27,23 +29,24 @@ export { PluginManager };
 export { AnalyticsEngine };
 export { BiometricManager };
 export { MLPersonalization };
+export { MathCore };
+export { Logger };
 
 // Utility exports
-export { Logger } from './core/utils/Logger.js';
-export { PerformanceMonitor } from './core/utils/PerformanceMonitor.js';
-export { EventRouter } from './core/utils/EventRouter.js';
+// export { PerformanceMonitor } from './core/utils/PerformanceMonitor.js';
+// export { EventRouter } from './core/utils/EventRouter.js';
 
 // Plugin exports
-export { PluginAPI } from './plugins/api/PluginAPI.js';
-export { PluginBase } from './plugins/base/PluginBase.js';
+// export { PluginAPI } from './plugins/api/PluginAPI.js';
+// export { PluginBase } from './plugins/base/PluginBase.js';
 
 // Analytics exports
-export { MetricsCollector } from './analytics/collectors/MetricsCollector.js';
-export { InsightGenerator } from './analytics/insights/InsightGenerator.js';
+// export { MetricsCollector } from './analytics/collectors/MetricsCollector.js';
+// export { InsightGenerator } from './analytics/insights/InsightGenerator.js';
 
 // ML exports
-export { PersonalizationModel } from './ml/models/PersonalizationModel.js';
-export { PredictiveModel } from './ml/models/PredictiveModel.js';
+// export { PersonalizationModel } from './ml/models/PersonalizationModel.js';
+// export { PredictiveModel } from './ml/models/PredictiveModel.js';
 
 // Configuration presets
 export const PRESETS = {

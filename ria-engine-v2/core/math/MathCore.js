@@ -13,12 +13,10 @@
  */
 
 import { EventEmitter } from 'events';
-import { FFTProcessor } from './processors/FFTProcessor.js';
+import { SpectralProcessor } from './processors/SpectralProcessor.js';
 import { StatisticalProcessor } from './processors/StatisticalProcessor.js';
-import { SpectralAnalyzer } from './processors/SpectralAnalyzer.js';
-import { FractalAnalyzer } from './processors/FractalAnalyzer.js';
+import { FractalProcessor } from './processors/FractalProcessor.js';
 import { WaveletProcessor } from './processors/WaveletProcessor.js';
-import { PerformanceOptimizer } from './utils/PerformanceOptimizer.js';
 
 export class MathCore extends EventEmitter {
   constructor(config = {}) {

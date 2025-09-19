@@ -15,12 +15,12 @@
  */
 
 import { EventEmitter } from 'events';
-import { ConfigSchema } from './schema/ConfigSchema.js';
-import { EnvironmentManager } from './environments/EnvironmentManager.js';
-import { ProfileManager } from './profiles/ProfileManager.js';
-import { ABTestManager } from './testing/ABTestManager.js';
-import { ConfigValidator } from './validation/ConfigValidator.js';
-import { ConfigPersistence } from './persistence/ConfigPersistence.js';
+// import { ConfigSchema } from './schema/ConfigSchema.js';
+// import { EnvironmentManager } from './environments/EnvironmentManager.js';
+// import { ProfileManager } from './profiles/ProfileManager.js';
+// import { ABTestManager } from './testing/ABTestManager.js';
+// import { ConfigValidator } from './validation/ConfigValidator.js';
+// import { ConfigPersistence } from './persistence/ConfigPersistence.js';
 
 export class ConfigManager extends EventEmitter {
   constructor(initialConfig = {}) {
@@ -170,12 +170,12 @@ export class ConfigManager extends EventEmitter {
     };
     
     // Initialize components
-    this.schema = new ConfigSchema();
-    this.environments = new EnvironmentManager();
-    this.profiles = new ProfileManager();
-    this.abTests = new ABTestManager();
-    this.validator = new ConfigValidator(this.schema);
-    this.persistence = new ConfigPersistence();
+    // this.schema = new ConfigSchema();
+    // this.environments = new EnvironmentManager();
+    // this.profiles = new ProfileManager();
+    // this.abTests = new ABTestManager();
+    // this.validator = new ConfigValidator(this.schema);
+    // this.persistence = new ConfigPersistence();
     
     // Configuration state
     this.currentConfig = {};
