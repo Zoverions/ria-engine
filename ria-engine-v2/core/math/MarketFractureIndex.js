@@ -11,8 +11,8 @@
  * - Composite MFI: Weighted combination of above metrics
  */
 
-import { SpectralProcessor } from './SpectralProcessor.js';
-import { StatisticalProcessor } from './StatisticalProcessor.js';
+import { SpectralProcessor } from './processors/SpectralProcessor.js';
+import { StatisticalProcessor } from './processors/StatisticalProcessor.js';
 
 export class MarketFractureIndex {
   constructor(config = {}) {

@@ -1,7 +1,6 @@
-const EventEmitter = require('events');
-const { AntifragileManager } = require('./AntifragileManager');
+import { AntifragileManager } from './AntifragileManager.js';
 
-class FinancialAntifragileManager extends AntifragileManager {
+export class FinancialAntifragileManager extends AntifragileManager {
     constructor(config = {}) {
         super({
             learningRate: 0.01,
@@ -37,11 +36,8 @@ class FinancialAntifragileManager extends AntifragileManager {
     }
 
     async initialize() {
-        await super.initialize();
-
         // Initialize financial-specific memory structures
         this.initializeMarketMemory();
-
         console.log('🏦 Financial Antifragile Manager initialized');
     }
 
@@ -654,5 +650,3 @@ class FinancialAntifragileManager extends AntifragileManager {
         console.log('🔄 Financial learning reset');
     }
 }
-
-module.exports = { FinancialAntifragileManager };

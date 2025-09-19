@@ -4,7 +4,7 @@ import { MarketStabilityMonitor } from '../core/MarketStabilityMonitor.js';
 async function main() {
   console.log('🚀 Starting ERC-20 Trading Bot (paper)');
 
-  const bot = new TradingBot({ mode: 'paper', baseUSD: 100000, tokens: ['BTC','ETH','AAPL','GOOGL'] });
+  const bot = new TradingBot({ mode: 'paper', baseUSD: 100000, tokens: ['WETH','USDC','WBTC'] });
   const monitor = new MarketStabilityMonitor();
 
   // Wire MFI to bot
@@ -19,10 +19,9 @@ async function main() {
   const timer = setInterval(() => {
     t++;
     const quotes = {
-      BTC: 45000 * (1 + 0.01 * Math.sin(t * 0.05)) + (Math.random()-0.5)*50,
-      ETH: 3000 * (1 + 0.012 * Math.sin(t * 0.06)) + (Math.random()-0.5)*5,
-      AAPL: 150 * (1 + 0.002 * Math.sin(t * 0.03)) + (Math.random()-0.5)*0.2,
-      GOOGL: 2800 * (1 + 0.003 * Math.sin(t * 0.02)) + (Math.random()-0.5)*2,
+      WETH: 3000 * (1 + 0.012 * Math.sin(t * 0.06)) + (Math.random()-0.5)*5,
+      USDC: 1.0 + (Math.random()-0.5)*0.001,
+      WBTC: 45000 * (1 + 0.01 * Math.sin(t * 0.05)) + (Math.random()-0.5)*50,
     };
     bot.setQuotes(quotes);
 
@@ -51,7 +50,7 @@ function mkOrderBook(mid) {
 // Create synthetic per-asset components aligned to monitor’s expectations
 function synthesizeComponents(data) {
   // We don’t have per-asset breakdown from MFI, so synthesize components from recent MFI
-  const assets = ['BTC','ETH','AAPL','GOOGL'];
+  const assets = ['WETH','USDC','WBTC'];
   const base = data.mfi;
   const comps = {};
   for (const a of assets) {

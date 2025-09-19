@@ -21,7 +21,14 @@
     "demo:quick": "node demos/quick-start.js",
     "demo:full": "node demos/comprehensive-demo.js",
     "demo:platforms": "node demos/platform-demo.js",
+    "demo:financial": "node demos/financial-metrics-demo.js",
     "demo:all": "npm run demo:quick && npm run demo:platforms && npm run demo:full",
+  "demo:erc20": "node demos/erc20-bot-demo.js",
+  "demo:eth-backtest": "node demos/eth-backtest.js",
+  "data:eth-csv": "node scripts/fetch-eth-csv.js",
+  "data:normalize": "node ria-engine-v2/scripts/normalize-eth-csv.js ria-engine-v2/data/eth_hourly_raw.csv ria-engine-v2/data/eth_hourly.csv",
+  "backtest:eth:csv": "CSV=ria-engine-v2/data/eth_hourly.csv node ria-engine-v2/demos/eth-backtest.js",
+    "backtest:eth": "CSV=ria-engine-v2/data/eth_hourly.csv node ria-engine-v2/demos/eth-backtest.js",
     "docs:serve": "node scripts/serve-docs.js"
   },
   "keywords": [
@@ -97,7 +104,8 @@
   "optionalDependencies": {
     "@tensorflow/tfjs-node": "^4.15.0",
     "ws": "^8.14.2",
-    "pako": "^2.1.0"
+    "pako": "^2.1.0",
+    "ethers": "^6.13.2"
   },
   "peerDependencies": {
     "canvas": "^2.11.2",

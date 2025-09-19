@@ -1,5 +1,3 @@
-import { Wallet, Mnemonic } from 'ethers';
-
 export class WalletManager {
   constructor({ mode = 'paper', privateKey = null, mnemonic = null } = {}) {
     this.mode = mode; // 'paper' | 'live'
@@ -7,13 +5,19 @@ export class WalletManager {
     this.paperBalances = new Map(); // token -> number
 
     if (mode === 'live') {
-      if (privateKey) {
-        this.wallet = new Wallet(privateKey);
-      } else if (mnemonic) {
-        this.wallet = Wallet.fromPhrase(mnemonic);
-      } else {
-        throw new Error('Live mode requires PRIVATE_KEY or MNEMONIC');
-      }
+      // Lazy import ethers only in live mode to keep paper mode dependency-free
+      (async () => {
+        const { Wallet } = await import('ethers');
+        if (privateKey) {
+          this.wallet = new Wallet(privateKey);
+        } else if (mnemonic) {
+          this.wallet = Wallet.fromPhrase(mnemonic);
+        } else {
+          throw new Error('Live mode requires PRIVATE_KEY or MNEMONIC');
+        }
+      })().catch((e) => {
+        throw new Error(`Failed to initialize live wallet: ${e.message}`);
+      });
     }
   }
 
