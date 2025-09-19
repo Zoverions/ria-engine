@@ -203,9 +203,24 @@ export class RIAEnhancedTradingBot {
             for (const token of chainTokens) {
                 if (token.coingeckoId) {
                     try {
-                        // Load data for both historical and RIA analysis
-                        const hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 90);
-                        const minuteData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '15m', 7);
+                        // Get comprehensive historical data (up to 365 days) for better RIA analysis
+                        const comprehensiveData = await this.historicalDataService.getComprehensiveHistoricalData(
+                            token.coingeckoId, 
+                            { priority: 'comprehensive', intervals: ['1h', '15m'], background: true }
+                        );
+                        
+                        // Try to get maximum available data for best predictions
+                        let hourlyData, minuteData;
+                        try {
+                            hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 365);
+                            minuteData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '15m', 30);
+                            console.log(`📊 RIA Analysis using ${hourlyData.length} hourly points (${Math.floor(hourlyData.length / 24)} days) for ${token.symbol}`);
+                        } catch (error) {
+                            // Fallback to immediate data if comprehensive not available
+                            hourlyData = comprehensiveData.immediate;
+                            minuteData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '15m', 7);
+                            console.log(`⚠️ Using fallback data: ${hourlyData.length} hourly points for ${token.symbol}`);
+                        }
                         
                         // Feed price data to RIA Engine for baseline analysis
                         await this.feedDataToRIA(token.symbol, hourlyData, minuteData);
@@ -615,14 +630,65 @@ export class RIAEnhancedTradingBot {
     // Helper methods
     async getTraditionalAnalysis(token, chainId) {
         // Get traditional technical analysis
-        const hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 30);
-        return this.historicalDataService.getTradingSignals(hourlyData);
+        // Use extended historical data for better spectral pattern analysis
+        let hourlyData;
+        try {
+            hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 180); // 6 months
+            console.log(`🔍 Spectral analysis using ${hourlyData.length} data points for ${token.symbol}`);
+        } catch (error) {
+            hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 90); // Fallback to 3 months
+        }
+        
+        const signals = this.historicalDataService.getTradingSignals(hourlyData);
+        
+        // Enhance signals with RIA spectral analysis if sufficient data
+        if (hourlyData.length >= 100) {
+            signals.riaSpectralConfidence = this.calculateSpectralConfidence(hourlyData);
+            signals.dataQuality = 'extended';
+        }
+        
+        return signals;
+    }
+
+    // Calculate spectral confidence for extended data analysis
+    calculateSpectralConfidence(data) {
+        if (data.length < 50) return 0.5;
+        
+        const prices = data.map(d => d.close);
+        const returns = [];
+        
+        for (let i = 1; i < prices.length; i++) {
+            returns.push((prices[i] - prices[i-1]) / prices[i-1]);
+        }
+        
+        // Calculate spectral density approximation
+        const mean = returns.reduce((sum, r) => sum + r, 0) / returns.length;
+        const variance = returns.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / returns.length;
+        
+        // Higher data count increases confidence
+        const dataConfidence = Math.min(data.length / 365, 1); // Up to 1 year
+        
+        // Lower variance in recent period increases confidence
+        const recentReturns = returns.slice(-30); // Last 30 periods
+        const recentVariance = recentReturns.reduce((sum, r) => sum + Math.pow(r - mean, 2), 0) / recentReturns.length;
+        const stabilityConfidence = Math.max(0, 1 - (recentVariance / variance));
+        
+        return (dataConfidence * 0.6) + (stabilityConfidence * 0.4);
     }
 
     async getRIASpecificAnalysis(token, chainId) {
         // Get RIA-specific analysis
-        const hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 7);
-        const fifteenMinData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '15m', 2);
+        // Extended multi-timeframe analysis for RIA resonance detection
+        let hourlyData, fifteenMinData;
+        try {
+            hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 90);   // 3 months hourly
+            fifteenMinData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '15m', 14); // 2 weeks 15-min
+            console.log(`🎯 Resonance analysis: ${hourlyData.length}h + ${fifteenMinData.length}(15m) points for ${token.symbol}`);
+        } catch (error) {
+            // Fallback to minimum required data
+            hourlyData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '1h', 7);
+            fifteenMinData = await this.historicalDataService.getHistoricalData(token.coingeckoId, '15m', 2);
+        }
         
         const riaResults = [];
         for (const [strategyName, strategy] of this.riaStrategies) {
