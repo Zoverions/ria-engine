@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIA Production Trading Platform</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>RIA Pro Trading</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" id="nav-dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" id="nav-wallets">
+                    <i class="fas fa-wallet"></i>
+                    <span>Multi-Wallet</span>
+                </li>
+                <li class="nav-item" id="nav-trading">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>DEX Trading</span>
+                </li>
+                <li class="nav-item" id="nav-bridge">
+                    <i class="fas fa-link"></i>
+                    <span>Cross-Chain</span>
+                </li>
+                <li class="nav-item" id="nav-funding">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Funding</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="connection-status">
+                    <div class="status-indicator online" id="connectionStatus"></div>
+                    <span id="connectionText">Production Ready</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="page-title">
+                    <h1 id="pageTitle">Production Dashboard</h1>
+                </div>
+                <div class="top-bar-actions">
+                    <div class="wallet-selector">
+                        <select id="wallet-selector">
+                            <option value="">Select Wallet</option>
+                        </select>
+                    </div>
+                    <div class="chain-selector">
+                        <select id="chain-selector">
+                            <option value="1">Ethereum</option>
+                            <option value="56">BSC</option>
+                            <option value="137">Polygon</option>
+                            <option value="42161">Arbitrum</option>
+                        </select>
+                    </div>
+                    <div class="balance-display">
+                        <span class="balance-label">Portfolio:</span>
+                        <span class="balance-amount" id="portfolioValue">$0.00</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard View -->
+            <section class="view active" id="dashboard-view">
+                <div class="dashboard-grid">
+                    <div class="card portfolio-overview">
+                        <div class="card-header">
+                            <h3>Multi-Wallet Portfolio</h3>
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="card-content" id="portfolio-overview">
+                            <!-- Portfolio data will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="card trading-metrics">
+                        <div class="card-header">
+                            <h3>Trading Performance</h3>
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="card-content" id="trading-metrics">
+                            <!-- Trading metrics will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="card recent-activity full-width">
+                        <div class="card-header">
+                            <h3>Recent Activity</h3>
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="card-content" id="recent-activity">
+                            <!-- Activity data will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Multi-Wallet View -->
+            <section class="view" id="wallets-view">
+                <div class="wallet-header">
+                    <h2>Multi-Wallet Management</h2>
+                    <div class="wallet-actions">
+                        <button class="btn btn-primary" id="create-wallet-btn">
+                            <i class="fas fa-plus"></i>
+                            Create Wallet
+                        </button>
+                        <button class="btn btn-secondary" id="import-wallet-btn">
+                            <i class="fas fa-download"></i>
+                            Import Wallet
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="wallets-grid" id="wallets-grid">
+                    <!-- Wallet cards will be populated here -->
+                </div>
+            </section>
+
+            <!-- DEX Trading View -->
+            <section class="view" id="trading-view">
+                <div class="trading-header">
+                    <h2>Production DEX Trading</h2>
+                    <div class="trading-status">
+                        <span class="status-indicator online" id="trading-status"></span>
+                        <span>Connected to DEX</span>
+                    </div>
+                </div>
+                
+                <div class="trading-grid">
+                    <div class="card trading-form">
+                        <div class="card-header">
+                            <h3>Execute Trade</h3>
+                            <i class="fas fa-exchange-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="trade-form">
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>From Token</label>
+                                        <select id="from-token" class="form-control">
+                                            <!-- Populated dynamically -->
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>To Token</label>
+                                        <select id="to-token" class="form-control">
+                                            <!-- Populated dynamically -->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Amount</label>
+                                        <input type="number" id="trade-amount" class="form-control" placeholder="0.0" step="0.001">
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Slippage %</label>
+                                        <input type="number" id="slippage" class="form-control" value="1" min="0.1" max="10" step="0.1">
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn btn-secondary" id="get-quote-btn">Get Quote</button>
+                                    <button class="btn btn-primary" id="execute-trade-btn">Execute Trade</button>
+                                </div>
+                            </div>
+                            <div class="trade-quote" id="trade-quote">
+                                <!-- Quote will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card active-trades">
+                        <div class="card-header">
+                            <h3>Active Trades</h3>
+                            <i class="fas fa-list"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="trades-list" id="active-trades">
+                                <!-- Active trades will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Cross-Chain Bridge View -->
+            <section class="view" id="bridge-view">
+                <div class="bridge-header">
+                    <h2>Cross-Chain Bridge</h2>
+                    <div class="supported-chains">
+                        <span>Supported: ETH • BSC • Polygon • Arbitrum</span>
+                    </div>
+                </div>
+                
+                <div class="bridge-grid">
+                    <div class="card bridge-form">
+                        <div class="card-header">
+                            <h3>Bridge Tokens</h3>
+                            <i class="fas fa-link"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="bridge-form">
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>From Chain</label>
+                                        <select id="from-chain" class="form-control">
+                                            <option value="1">Ethereum</option>
+                                            <option value="56">BSC</option>
+                                            <option value="137">Polygon</option>
+                                            <option value="42161">Arbitrum</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>To Chain</label>
+                                        <select id="to-chain" class="form-control">
+                                            <option value="1">Ethereum</option>
+                                            <option value="56">BSC</option>
+                                            <option value="137">Polygon</option>
+                                            <option value="42161">Arbitrum</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Token</label>
+                                        <select id="bridge-token" class="form-control">
+                                            <option value="USDC">USDC</option>
+                                            <option value="USDT">USDT</option>
+                                            <option value="ETH">ETH</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Amount</label>
+                                        <input type="number" id="bridge-amount" class="form-control" placeholder="0.0" step="0.01">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Bridge Protocol</label>
+                                        <select id="bridge-protocol" class="form-control">
+                                            <option value="auto">Auto (Best)</option>
+                                            <option value="layerzero">LayerZero</option>
+                                            <option value="hop">Hop Protocol</option>
+                                            <option value="synapse">Synapse</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn btn-secondary" id="get-bridge-quote-btn">Get Quote</button>
+                                    <button class="btn btn-primary" id="execute-bridge-btn">Bridge</button>
+                                </div>
+                            </div>
+                            <div class="bridge-quote" id="bridge-quote">
+                                <!-- Bridge quote will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card active-bridges">
+                        <div class="card-header">
+                            <h3>Active Bridges</h3>
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="bridges-list" id="active-bridges">
+                                <!-- Active bridges will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Funding View -->
+            <section class="view" id="funding-view">
+                <div class="funding-header">
+                    <h2>Multi-Source Funding</h2>
+                    <div class="funding-methods">
+                        <span>Methods: Card • Bank • CEX • Crypto</span>
+                    </div>
+                </div>
+                
+                <div class="funding-grid">
+                    <div class="card funding-form">
+                        <div class="card-header">
+                            <h3>Fund Wallet</h3>
+                            <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="funding-form">
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Funding Method</label>
+                                        <select id="funding-method" class="form-control">
+                                            <option value="moonpay">MoonPay (Card/Bank)</option>
+                                            <option value="ramp">Ramp Network</option>
+                                            <option value="transak">Transak</option>
+                                            <option value="coinbase">Coinbase Withdrawal</option>
+                                            <option value="binance">Binance Withdrawal</option>
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Payment Method</label>
+                                        <select id="payment-method" class="form-control">
+                                            <option value="card">Credit/Debit Card</option>
+                                            <option value="bank">Bank Transfer</option>
+                                            <option value="applePay">Apple Pay</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Token</label>
+                                        <select id="funding-token" class="form-control">
+                                            <!-- Populated dynamically -->
+                                        </select>
+                                    </div>
+                                    <div class="input-group">
+                                        <label>Chain</label>
+                                        <select id="funding-chain" class="form-control">
+                                            <option value="1">Ethereum</option>
+                                            <option value="56">BSC</option>
+                                            <option value="137">Polygon</option>
+                                            <option value="42161">Arbitrum</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="input-group">
+                                        <label>Amount (USD)</label>
+                                        <input type="number" id="funding-amount" class="form-control" placeholder="100" min="25" step="1">
+                                    </div>
+                                </div>
+                                <div class="form-actions">
+                                    <button class="btn btn-primary btn-block" id="fund-wallet-btn">Fund Wallet</button>
+                                </div>
+                            </div>
+                            <div class="funding-instructions" id="funding-instructions">
+                                <!-- Instructions will be displayed here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card funding-history">
+                        <div class="card-header">
+                            <h3>Funding History</h3>
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="funding-list" id="funding-history">
+                                <!-- Funding history will be populated here -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification System -->
+    <div id="notifications-container"></div>
+
+    <!-- Loading Scripts -->
+    <script type="module" src="production-app.js"></script>
+    <script type="module" src="multi-wallet.js"></script>
+    <script type="module" src="token-database.js"></script>
+    <script type="module" src="dex-integration.js"></script>
+    <script type="module" src="production-trading-engine.js"></script>
+    <script type="module" src="cross-chain-bridge.js"></script>
+    <script type="module" src="funding-interface.js"></script>
+</body>
+</html>

@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RIA Trading Desktop</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <nav class="sidebar">
+            <div class="logo">
+                <i class="fas fa-chart-line"></i>
+                <span>RIA Trading</span>
+            </div>
+            
+            <ul class="nav-menu">
+                <li class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item" data-page="wallet">
+                    <i class="fas fa-wallet"></i>
+                    <span>Wallet</span>
+                </li>
+                <li class="nav-item" data-page="trading">
+                    <i class="fas fa-exchange-alt"></i>
+                    <span>Trading</span>
+                </li>
+                <li class="nav-item" data-page="backtest">
+                    <i class="fas fa-chart-area"></i>
+                    <span>Backtest</span>
+                </li>
+                <li class="nav-item" data-page="settings">
+                    <i class="fas fa-cog"></i>
+                    <span>Settings</span>
+                </li>
+            </ul>
+            
+            <div class="sidebar-footer">
+                <div class="connection-status">
+                    <div class="status-indicator offline" id="connectionStatus"></div>
+                    <span id="connectionText">Disconnected</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="page-title">
+                    <h1 id="pageTitle">Dashboard</h1>
+                </div>
+                <div class="top-bar-actions">
+                    <div class="balance-display">
+                        <span class="balance-label">Portfolio Value:</span>
+                        <span class="balance-amount" id="portfolioValue">$0.00</span>
+                    </div>
+                    <button class="btn btn-primary" id="emergencyStop" style="display: none;">
+                        <i class="fas fa-stop"></i>
+                        Emergency Stop
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Page -->
+            <section class="page active" id="dashboard-page">
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Portfolio Overview</h3>
+                            <i class="fas fa-chart-pie"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="stat-row">
+                                <span class="stat-label">Total Value:</span>
+                                <span class="stat-value" id="totalValue">$0.00</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Available Balance:</span>
+                                <span class="stat-value" id="availableBalance">$0.00</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">P&L Today:</span>
+                                <span class="stat-value" id="dailyPnL">$0.00</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Total Return:</span>
+                                <span class="stat-value" id="totalReturn">0.00%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Trading Status</h3>
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="trading-status">
+                                <div class="status-indicator stopped" id="tradingStatus"></div>
+                                <span id="tradingStatusText">Stopped</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Strategy:</span>
+                                <span class="stat-value" id="activeStrategy">Market Fracture Index</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Trades Today:</span>
+                                <span class="stat-value" id="tradesToday">0</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Win Rate:</span>
+                                <span class="stat-value" id="winRate">0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Risk Metrics</h3>
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="stat-row">
+                                <span class="stat-label">Sharpe Ratio:</span>
+                                <span class="stat-value" id="sharpeRatio">0.00</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Max Drawdown:</span>
+                                <span class="stat-value" id="maxDrawdown">0.00%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">VaR (95%):</span>
+                                <span class="stat-value" id="valueAtRisk">0.00%</span>
+                            </div>
+                            <div class="stat-row">
+                                <span class="stat-label">Volatility:</span>
+                                <span class="stat-value" id="volatility">0.00%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card full-width">
+                        <div class="card-header">
+                            <h3>Recent Trades</h3>
+                            <i class="fas fa-history"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="table-container">
+                                <table class="trades-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Time</th>
+                                            <th>Symbol</th>
+                                            <th>Side</th>
+                                            <th>Quantity</th>
+                                            <th>Price</th>
+                                            <th>P&L</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentTrades">
+                                        <tr>
+                                            <td colspan="6" class="no-data">No recent trades</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Wallet Page -->
+            <section class="page" id="wallet-page">
+                <div class="wallet-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Wallet Management</h3>
+                            <i class="fas fa-wallet"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="wallet-actions">
+                                <button class="btn btn-primary" id="createWalletBtn">
+                                    <i class="fas fa-plus"></i>
+                                    Create New Wallet
+                                </button>
+                                <button class="btn btn-secondary" id="importWalletBtn">
+                                    <i class="fas fa-download"></i>
+                                    Import Wallet
+                                </button>
+                            </div>
+                            
+                            <div class="wallet-info" id="walletInfo" style="display: none;">
+                                <div class="info-section">
+                                    <label>Public Address (for funding):</label>
+                                    <div class="address-container">
+                                        <input type="text" class="address-input" id="publicAddress" readonly>
+                                        <button class="btn btn-small" id="copyAddressBtn">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="info-section">
+                                    <label>Private Key (keep secure!):</label>
+                                    <div class="private-key-container">
+                                        <input type="password" class="private-key-input" id="privateKey" readonly>
+                                        <button class="btn btn-small" id="showPrivateKeyBtn">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
+                                        <button class="btn btn-small" id="copyPrivateKeyBtn">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                
+                                <div class="wallet-actions-secondary">
+                                    <button class="btn btn-warning" id="exportWalletBtn">
+                                        <i class="fas fa-upload"></i>
+                                        Export Wallet Backup
+                                    </button>
+                                    <button class="btn btn-danger" id="deleteWalletBtn">
+                                        <i class="fas fa-trash"></i>
+                                        Delete Wallet
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Wallet Balance</h3>
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="balance-grid">
+                                <div class="balance-item">
+                                    <span class="currency">USDC</span>
+                                    <span class="amount" id="usdcBalance">0.00</span>
+                                </div>
+                                <div class="balance-item">
+                                    <span class="currency">ETH</span>
+                                    <span class="amount" id="ethBalance">0.0000</span>
+                                </div>
+                            </div>
+                            
+                            <div class="funding-instructions">
+                                <h4>How to Fund Your Wallet:</h4>
+                                <ol>
+                                    <li>Copy your public address above</li>
+                                    <li>Send USDC to this address from your exchange or other wallet</li>
+                                    <li>Wait for confirmation (usually 1-2 minutes)</li>
+                                    <li>Your balance will update automatically</li>
+                                </ol>
+                                <div class="warning">
+                                    ⚠️ Only send supported tokens (USDC, ETH) to this address
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Trading Page -->
+            <section class="page" id="trading-page">
+                <div class="trading-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Trading Controls</h3>
+                            <i class="fas fa-play"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="trading-controls">
+                                <button class="btn btn-success" id="startTradingBtn">
+                                    <i class="fas fa-play"></i>
+                                    Start Trading
+                                </button>
+                                <button class="btn btn-danger" id="stopTradingBtn" style="display: none;">
+                                    <i class="fas fa-stop"></i>
+                                    Stop Trading
+                                </button>
+                            </div>
+                            
+                            <div class="strategy-selection">
+                                <label for="strategySelect">Trading Strategy:</label>
+                                <select id="strategySelect" class="form-control">
+                                    <option value="market-fracture">Market Fracture Index</option>
+                                    <option value="mean-reversion">Mean Reversion</option>
+                                    <option value="momentum">Momentum Strategy</option>
+                                </select>
+                            </div>
+                            
+                            <div class="risk-settings">
+                                <div class="setting-row">
+                                    <label>Position Size (%):</label>
+                                    <input type="number" id="positionSize" min="1" max="100" value="25" class="form-control">
+                                </div>
+                                <div class="setting-row">
+                                    <label>Max Risk Per Trade (%):</label>
+                                    <input type="number" id="maxRisk" min="0.1" max="10" step="0.1" value="5" class="form-control">
+                                </div>
+                                <div class="setting-row">
+                                    <label>Stop Loss (%):</label>
+                                    <input type="number" id="stopLoss" min="1" max="20" step="0.5" value="5" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Live Trading Log</h3>
+                            <i class="fas fa-terminal"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="log-container" id="tradingLog">
+                                <div class="log-entry">
+                                    <span class="timestamp">[00:00:00]</span>
+                                    <span class="message">Trading engine ready</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Backtest Page -->
+            <section class="page" id="backtest-page">
+                <div class="backtest-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Backtest Configuration</h3>
+                            <i class="fas fa-chart-area"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="backtest-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Symbol:</label>
+                                        <select id="backtestSymbol" class="form-control">
+                                            <option value="ETH">Ethereum (ETH)</option>
+                                            <option value="BTC">Bitcoin (BTC)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Timeframe:</label>
+                                        <select id="backtestTimeframe" class="form-control">
+                                            <option value="1h">1 Hour</option>
+                                            <option value="4h">4 Hours</option>
+                                            <option value="1d">1 Day</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>Initial Capital:</label>
+                                        <input type="number" id="initialCapital" value="100000" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Data Source:</label>
+                                        <select id="dataSource" class="form-control">
+                                            <option value="csv">Local CSV</option>
+                                            <option value="api">Live API</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                
+                                <button class="btn btn-primary" id="runBacktestBtn">
+                                    <i class="fas fa-play"></i>
+                                    Run Backtest
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Backtest Results</h3>
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="results-container" id="backtestResults">
+                                <div class="no-results">
+                                    Run a backtest to see results here
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Settings Page -->
+            <section class="page" id="settings-page">
+                <div class="settings-container">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3>Application Settings</h3>
+                            <i class="fas fa-cog"></i>
+                        </div>
+                        <div class="card-content">
+                            <div class="settings-section">
+                                <h4>Trading Parameters</h4>
+                                <div class="setting-item">
+                                    <label>Risk-Free Rate (%):</label>
+                                    <input type="number" id="riskFreeRate" step="0.01" value="2.0" class="form-control">
+                                </div>
+                                <div class="setting-item">
+                                    <label>Trade Cooldown (minutes):</label>
+                                    <input type="number" id="tradeCooldown" min="0" value="0" class="form-control">
+                                </div>
+                                <div class="setting-item">
+                                    <label>Fee Rate (bps):</label>
+                                    <input type="number" id="feeRate" min="0" value="10" class="form-control">
+                                </div>
+                            </div>
+                            
+                            <div class="settings-section">
+                                <h4>Display Options</h4>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="darkMode" checked>
+                                        Dark Mode
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="soundAlerts">
+                                        Sound Alerts
+                                    </label>
+                                </div>
+                                <div class="setting-item">
+                                    <label>
+                                        <input type="checkbox" id="autoSave" checked>
+                                        Auto-save Settings
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-actions">
+                                <button class="btn btn-primary" id="saveSettingsBtn">
+                                    <i class="fas fa-save"></i>
+                                    Save Settings
+                                </button>
+                                <button class="btn btn-secondary" id="resetSettingsBtn">
+                                    <i class="fas fa-undo"></i>
+                                    Reset to Defaults
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Modals -->
+    <div class="modal" id="createWalletModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Create New Wallet</h3>
+                <button class="modal-close" data-modal="createWalletModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="warning-box">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <p>This will create a new Ethereum wallet. Make sure to backup your private key securely!</p>
+                </div>
+                <div class="form-group">
+                    <label>Wallet Password (optional, for extra security):</label>
+                    <input type="password" id="walletPassword" class="form-control" placeholder="Enter password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-modal="createWalletModal">Cancel</button>
+                <button class="btn btn-primary" id="confirmCreateWallet">Create Wallet</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="importWalletModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Import Wallet</h3>
+                <button class="modal-close" data-modal="importWalletModal">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>Private Key:</label>
+                    <textarea id="importPrivateKey" class="form-control" placeholder="Enter your private key"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Password (if encrypted):</label>
+                    <input type="password" id="importPassword" class="form-control" placeholder="Enter password">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-modal="importWalletModal">Cancel</button>
+                <button class="btn btn-primary" id="confirmImportWallet">Import Wallet</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="wallet.js"></script>
+    <script src="trading.js"></script>
+    <script src="backtest.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
