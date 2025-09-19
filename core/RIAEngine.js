@@ -26,10 +26,18 @@ import { Logger } from './utils/Logger.js';
 import { GenerativeInterventionManager } from '../generative/GenerativeInterventionManager.js';
 import { MultiSensoryResonanceManager } from '../resonance/MultiSensoryResonanceManager.js';
 import { AntifragileManager } from '../antifragile/AntifragileManager.js';
+import { AMAPManager } from './predictive/AMAPManager.js';
+import { NovelSynthesisManager } from '../generative/NovelSynthesisManager.js';
 
 /**
  * Main RIA Engine class - orchestrates all subsystems
  * Provides unified API for cognitive load reduction across platforms
+ *
+ * Enhancement Subsystems:
+ * - GenerativeInterventionManager: Proactive context-aware assistance
+ * - MultiSensoryResonanceManager: Adaptive audio/haptic feedback
+ * - AntifragileManager: Reinforcement learning from fractures
+ * - AMAPManager: Proactive disruption of suboptimal behavioral loops (antifragile maximization)
  */
 export class RIAEngine extends EventEmitter {
   constructor(config = {}) {
@@ -52,6 +60,14 @@ export class RIAEngine extends EventEmitter {
     this.generativeManager = new GenerativeInterventionManager(this.config.get('generative'));
     this.resonanceManager = new MultiSensoryResonanceManager(this.config.get('resonance'));
     this.antifragileManager = new AntifragileManager(this.config.get('antifragile'));
+    
+    // Initialize Novel Synthesis and AMAP subsystems
+    this.novelSynthesisManager = new NovelSynthesisManager();
+    this.amapManager = new AMAPManager({
+      fractalProcessor: this.mathCore.fractalProcessor,
+      statisticalProcessor: this.mathCore.statisticalProcessor,
+      synthesisManager: this.novelSynthesisManager
+    });
     
     // Engine state
     this.state = {
@@ -256,7 +272,6 @@ export class RIAEngine extends EventEmitter {
    */
   async processDataPacket(dataPacket) {
     const { source, timestamp, data } = dataPacket;
-    
     try {
       // Stage 1: Math Core - Compute FI and related metrics
       const mathResult = await this.mathCore.process(data);
@@ -295,6 +310,19 @@ export class RIAEngine extends EventEmitter {
       // Limit buffer size
       if (this.resultBuffer.length > 1000) {
         this.resultBuffer.shift();
+      }
+      
+      // AMAP: Detect and disrupt suboptimal behavioral loops
+      if (this.amapManager.detectEntrapmentPattern(data.workflow)) {
+        const disruption = this.amapManager.disruptPattern(data.workflow, data.context);
+        // Optionally stress-test the new pattern
+        this.amapManager.stressTestPattern(disruption, data.environment || {});
+        // Add disruption to interventions
+        interventions.push({
+          type: 'amap_disruption',
+          details: disruption,
+          priority: 0
+        });
       }
       
     } catch (error) {
@@ -475,7 +503,11 @@ export class RIAEngine extends EventEmitter {
       enhancements: {
         generative: this.generativeManager.getStats(),
         resonance: this.resonanceManager.getStatus(),
-        antifragile: this.antifragileManager.getStatus()
+        antifragile: this.antifragileManager.getStatus(),
+        amap: {
+          enabled: !!this.amapManager,
+          lastDisruption: this.amapManager?.lastPatternComplexity || null
+        }
       },
       dataStreams: Array.from(this.dataStreams.entries()).map(([id, stream]) => ({
         id,

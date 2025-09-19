@@ -96,7 +96,8 @@
     "README.md"
   ],
   "dependencies": {
-    "events": "^3.3.0"
+    "events": "^3.3.0",
+    "@tensorflow/tfjs-node": "^4.15.0"
   },
   "devDependencies": {
     "c8": "^8.0.1",
@@ -107,7 +108,6 @@
     "eslint-plugin-promise": "^6.1.1"
   },
   "optionalDependencies": {
-    "@tensorflow/tfjs-node": "^4.15.0",
     "ws": "^8.14.2",
     "pako": "^2.1.0"
   },
@@ -134,7 +134,9 @@
       "novel_enhancements": true,
       "generative_interventions": true,
       "multi_sensory_resonance": true,
-      "antifragile_learning": true
+      "antifragile_learning": true,
+      "predictive_antifragility": true,
+      "collective_intelligence": true
     },
     "mathematical_processors": {
       "spectral": true,
