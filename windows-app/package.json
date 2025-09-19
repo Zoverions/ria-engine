@@ -32,15 +32,37 @@
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64"
+          ]
         },
         {
           "target": "portable",
-          "arch": ["x64", "ia32"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
-      "icon": "assets/icon.ico",
-      "requestedExecutionLevel": "asInvoker"
+      "verifyUpdateCodeSignature": false,
+      "certificateFile": null,
+      "certificatePassword": null
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Office"
     },
     "nsis": {
       "oneClick": false,
