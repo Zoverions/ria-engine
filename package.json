@@ -1,0 +1,312 @@
+{
+  "name": "@ria/engine-core",
+  "version": "2.1.0",
+  "description": "RIA Engine v2.1 - Core Scientific Analysis Framework for Mathematical Processing, Market Analysis, and Antifragile Learning",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test tests/**/*.test.js",
+    "test:unit": "node --test tests/unit/**/*.test.js",
+    "test:integration": "node --test tests/integration/**/*.test.js",
+    "test:performance": "node --test tests/performance/**/*.test.js",
+    "test:e2e": "node --test tests/e2e/**/*.test.js",
+    "test:coverage": "c8 node --test tests/**/*.test.js",
+    "build": "node scripts/build.js",
+    "build:plugins": "node scripts/build-plugins.js",
+    "build:docs": "node scripts/build-docs.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "benchmark": "node benchmarks/run-benchmarks.js",
+    "profile": "node --prof index.js",
+    "validate": "node scripts/validate-config.js",
+    "demo": "node demos/quick-start.js",
+    "demo:core": "node demos/core-test.js",
+    "demo:comprehensive": "node demos/comprehensive-demo.js",
+    "demo:educational": "node education-demo.js",
+    "demo:health": "node rhm-demo.js",
+    "demo:trading": "node trading-demo.js",
+    "docs:serve": "node scripts/serve-docs.js"
+  },
+  "keywords": [
+    "scientific-analysis",
+    "mathematical-processing",
+    "market-analysis",
+    "antifragile-learning",
+    "spectral-analysis",
+    "fractal-processing",
+    "wavelet-analysis",
+    "pattern-recognition",
+    "machine-learning",
+    "cognitive-analysis",
+    "data-science",
+    "financial-analysis",
+    "healthcare-analytics",
+    "educational-tools"
+  ],
+  "author": "Zoverions",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zoverions/ria-engine.git",
+    "directory": "core-ria-engine-v2"
+  },
+  "bugs": {
+    "url": "https://github.com/Zoverions/ria-engine/issues"
+  },
+  "homepage": "https://github.com/Zoverions/ria-engine/tree/core-ria-engine-v2#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "import": "./core/RIAEngine.js"
+    },
+    "./analytics": {
+      "import": "./analytics/AnalyticsEngine.js"
+    },
+    "./antifragile": {
+      "import": "./antifragile/AntifragileManager.js"
+    },
+    "./biometrics": {
+      "import": "./biometrics/BiometricManager.js"
+    },
+    "./ml": {
+      "import": "./ml/MLPersonalization.js"
+    },
+    "./resonance": {
+      "import": "./resonance/MultiSensoryResonanceManager.js"
+    },
+    "./generative": {
+      "import": "./generative/GenerativeInterventionManager.js"
+    },
+    "./plugins": {
+      "import": "./plugins/PluginManager.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "core/",
+    "analytics/",
+    "antifragile/",
+    "biometrics/",
+    "ml/",
+    "resonance/",
+    "generative/",
+    "plugins/",
+    "tests/",
+    "demos/",
+    "docs/",
+    "scripts/",
+    "data/",
+    "trading/",
+    "*.js",
+    "dist/",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "events": "^3.3.0"
+  },
+  "devDependencies": {
+    "c8": "^8.0.1",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1"
+  },
+  "optionalDependencies": {
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "ws": "^8.14.2",
+    "pako": "^2.1.0"
+  },
+  "peerDependencies": {
+    "canvas": "^2.11.2"
+  },
+  "config": {
+    "default_profile": "scientific",
+    "default_environment": "production",
+    "analytics_enabled": true,
+    "telemetry_enabled": false
+  },
+  "ria": {
+    "engine_version": "2.1.0",
+    "api_version": "2.1.0",
+    "core_only": true,
+    "compatibility": ["2.0.x", "1.x"],
+    "features": {
+      "mathematical_processing": true,
+      "market_analysis": true,
+      "antifragile_learning": true,
+      "spectral_analysis": true,
+      "fractal_processing": true,
+      "wavelet_analysis": true,
+      "pattern_recognition": true,
+      "cognitive_analysis": true,
+      "biometric_analysis": true,
+      "ml_integration": true,
+      "plugin_system": true
+    },
+    "applications": {
+      "scientific_research": true,
+      "market_analysis": true,
+      "educational_tools": true,
+      "healthcare": true,
+      "data_science": true
+    },
+    "deployment": {
+      "standalone": true,
+      "embedded": true,
+      "cloud": true,
+      "edge": true
+    }
+  }
+}
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js",
+    "test": "node --test tests/**/*.test.js",
+    "test:coverage": "c8 node --test tests/**/*.test.js",
+    "build": "node scripts/build.js",
+    "build:plugins": "node scripts/build-plugins.js",
+    "build:docs": "node scripts/build-docs.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "benchmark": "node benchmarks/run-benchmarks.js",
+    "profile": "node --prof index.js",
+    "validate": "node scripts/validate-config.js",
+    "demo": "node demos/quick-start.js",
+    "demo:quick": "node demos/quick-start.js",
+    "demo:full": "node demos/comprehensive-demo.js",
+    "demo:platforms": "node demos/platform-demo.js",
+    "demo:financial": "node demos/financial-metrics-demo.js",
+    "demo:all": "npm run demo:quick && npm run demo:platforms && npm run demo:full",
+  "demo:erc20": "node demos/erc20-bot-demo.js",
+  "demo:eth-backtest": "node demos/eth-backtest.js",
+  "data:eth-csv": "node scripts/fetch-eth-csv.js",
+  "data:normalize": "node ria-engine-v2/scripts/normalize-eth-csv.js ria-engine-v2/data/eth_hourly_raw.csv ria-engine-v2/data/eth_hourly.csv",
+  "backtest:eth:csv": "CSV=ria-engine-v2/data/eth_hourly.csv node ria-engine-v2/demos/eth-backtest.js",
+    "backtest:eth": "CSV=ria-engine-v2/data/eth_hourly.csv node ria-engine-v2/demos/eth-backtest.js",
+    "docs:serve": "node scripts/serve-docs.js"
+  },
+  "keywords": [
+    "cognitive-load",
+    "attention",
+    "ui-adaptation",
+    "real-time",
+    "analytics",
+    "biometrics",
+    "machine-learning",
+    "accessibility",
+    "productivity",
+    "user-experience"
+  ],
+  "author": "Zoverions Grand Unified Model ZGUM v16.2",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zoverions/ria-engine.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Zoverions/ria-engine/issues"
+  },
+  "homepage": "https://github.com/Zoverions/ria-engine#readme",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "exports": {
+    ".": {
+      "import": "./index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./core": {
+      "import": "./core/index.js"
+    },
+    "./plugins": {
+      "import": "./plugins/index.js"
+    },
+    "./analytics": {
+      "import": "./analytics/index.js"
+    },
+    "./ml": {
+      "import": "./ml/index.js"
+    },
+    "./biometrics": {
+      "import": "./biometrics/index.js"
+    }
+  },
+  "files": [
+    "index.js",
+    "core/",
+    "plugins/",
+    "analytics/",
+    "ml/",
+    "biometrics/",
+    "dist/",
+    "docs/",
+    "CHANGELOG.md",
+    "LICENSE",
+    "README.md"
+  ],
+  "dependencies": {
+    "events": "^3.3.0"
+  },
+  "devDependencies": {
+    "c8": "^8.0.1",
+    "eslint": "^8.57.0",
+    "eslint-config-standard": "^17.1.0",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-n": "^16.6.2",
+    "eslint-plugin-promise": "^6.1.1"
+  },
+  "optionalDependencies": {
+    "@tensorflow/tfjs-node": "^4.15.0",
+    "ws": "^8.14.2",
+    "pako": "^2.1.0",
+    "ethers": "^6.13.2"
+  },
+  "peerDependencies": {
+    "canvas": "^2.11.2",
+    "puppeteer": "^21.0.0"
+  },
+  "config": {
+    "default_profile": "average",
+    "default_environment": "production",
+    "analytics_enabled": true,
+    "telemetry_enabled": false
+  },
+  "ria": {
+    "engine_version": "2.0.0",
+    "api_version": "2.0.0",
+    "compatibility": ["1.x"],
+    "features": {
+      "core": true,
+      "analytics": true,
+      "biometrics": true,
+      "ml": true,
+      "plugins": true,
+      "enterprise": true
+    },
+    "platforms": {
+      "web": true,
+      "electron": true,
+      "mobile": true,
+      "figma": true,
+      "vscode": true
+    },
+    "deployment": {
+      "cloud": true,
+      "on_premise": true,
+      "edge": true
+    }
+  }
+}
