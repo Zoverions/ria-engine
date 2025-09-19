@@ -2,7 +2,32 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" co                        <div class="card-content" id="trading-metrics">
+                            <!-- Trading metrics will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class=\"card enhanced-bot\">
+                        <div class=\"card-header\">
+                            <h3>Enhanced Trading Bot</h3>
+                            <i class=\"fas fa-robot\"></i>
+                        </div>
+                        <div class=\"card-content\">
+                            <div class=\"bot-status\">
+                                <div class=\"status-indicator\" id=\"bot-status\">Stopped</div>
+                                <span id=\"bot-status-text\">90-Day Analysis Ready</span>
+                            </div>
+                            <div class=\"bot-controls\">
+                                <button class=\"btn btn-success\" id=\"start-enhanced-bot-btn\">Start Enhanced Bot</button>
+                                <button class=\"btn btn-danger\" id=\"stop-enhanced-bot-btn\" style=\"display: none;\">Stop Bot</button>
+                            </div>
+                            <div class=\"bot-info\">
+                                <small>Uses 90 days of historical data with technical analysis</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class=\"card recent-activity full-width\">""width=device-width, initial-scale=1.0">
     <title>RIA Production Trading Platform</title>
     <link rel="stylesheet" href="styles.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
@@ -64,6 +89,7 @@
                             <option value="1">Ethereum</option>
                             <option value="56">BSC</option>
                             <option value="137">Polygon</option>
+                            <option value="369">PulseChain</option>
                             <option value="42161">Arbitrum</option>
                         </select>
                     </div>
@@ -202,7 +228,7 @@
                 <div class="bridge-header">
                     <h2>Cross-Chain Bridge</h2>
                     <div class="supported-chains">
-                        <span>Supported: ETH • BSC • Polygon • Arbitrum</span>
+                        <span>Supported: ETH • BSC • Polygon • PulseChain • Arbitrum</span>
                     </div>
                 </div>
                 
@@ -221,6 +247,7 @@
                                             <option value="1">Ethereum</option>
                                             <option value="56">BSC</option>
                                             <option value="137">Polygon</option>
+                                            <option value="369">PulseChain</option>
                                             <option value="42161">Arbitrum</option>
                                         </select>
                                     </div>
@@ -230,6 +257,7 @@
                                             <option value="1">Ethereum</option>
                                             <option value="56">BSC</option>
                                             <option value="137">Polygon</option>
+                                            <option value="369">PulseChain</option>
                                             <option value="42161">Arbitrum</option>
                                         </select>
                                     </div>
@@ -334,6 +362,7 @@
                                             <option value="1">Ethereum</option>
                                             <option value="56">BSC</option>
                                             <option value="137">Polygon</option>
+                                            <option value="369">PulseChain</option>
                                             <option value="42161">Arbitrum</option>
                                         </select>
                                     </div>
@@ -381,5 +410,7 @@
     <script type="module" src="production-trading-engine.js"></script>
     <script type="module" src="cross-chain-bridge.js"></script>
     <script type="module" src="funding-interface.js"></script>
+    <script type="module" src="historical-data-service.js"></script>
+    <script type="module" src="enhanced-trading-bot.js"></script>
 </body>
 </html>

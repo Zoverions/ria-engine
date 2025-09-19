@@ -35,6 +35,16 @@ export class DEXIntegration {
             137: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506',  // Polygon
             42161: '0x1b02dA8Cb0d097eB8D57A175b88c7D8b47997506' // Arbitrum
         });
+
+        // PulseX Router (PulseChain DEX)
+        this.dexes.set('pulsex', {
+            369: '0x98bf93ebf5c380C0e6Ae8e192A7e2AE08edAcc02'     // PulseChain
+        });
+
+        // PulseX Router
+        this.dexes.set('pulsex', {
+            369: '0x98bf93ebf5c380C0e6Ae8e192A7e2AE08edAcc02'     // PulseChain
+        });
     }
 
     // Get quote from 1inch API

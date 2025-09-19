@@ -19,6 +19,7 @@ export class MultiWalletManager {
         this.providers.set(1, new ethers.JsonRpcProvider('https://eth.llamarpc.com')); // Ethereum
         this.providers.set(56, new ethers.JsonRpcProvider('https://bsc-dataseed.binance.org')); // BSC
         this.providers.set(137, new ethers.JsonRpcProvider('https://polygon-rpc.com')); // Polygon
+        this.providers.set(369, new ethers.JsonRpcProvider('https://rpc.pulsechain.com')); // PulseChain
         this.providers.set(42161, new ethers.JsonRpcProvider('https://arb1.arbitrum.io/rpc')); // Arbitrum
     }
 

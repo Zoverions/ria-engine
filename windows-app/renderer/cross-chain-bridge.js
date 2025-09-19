@@ -44,6 +44,7 @@ export class CrossChainBridge {
             1: '0x2796317b0fF8538F253012862c06787Adfb8cEb6',    // Ethereum
             56: '0xd123f70AE324d34A9E76b67a27bf77593bA8749f',   // BSC
             137: '0x8f5BBB2BB8c2Ee94639E55d5F41de9b4839C1280',  // Polygon
+            369: '0x5Aa5f7f84eD0E5db0a4a85C3947eA16B53352FD4',   // PulseChain
             42161: '0x6F4e8eBa4D337f874Ab57478AcC2Cb5BACdc19c9' // Arbitrum
         });
 

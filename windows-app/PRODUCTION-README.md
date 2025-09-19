@@ -193,6 +193,7 @@ riskLimits: {
 | Ethereum | 1 | ETH | Uniswap, 1inch, SushiSwap | All bridges |
 | BSC | 56 | BNB | PancakeSwap, 1inch | LayerZero, Synapse |
 | Polygon | 137 | MATIC | Uniswap, 1inch, SushiSwap | All bridges |
+| **PulseChain** | **369** | **PLS** | **PulseX** | **Synapse** |
 | Arbitrum | 42161 | ETH | Uniswap, 1inch, SushiSwap | LayerZero, Hop |
 
 ### Supported Tokens
@@ -200,7 +201,28 @@ riskLimits: {
 **ETH Ecosystem**: ETH, WETH, stETH
 **DeFi Tokens**: UNI, AAVE, COMP, LINK, SUSHI
 **Layer 1s**: BTC, BNB, MATIC, AVAX
+**PulseChain Ecosystem**: PLS, PLSX, HEX, WPLS, INC, TEXAN
 **Meme Tokens**: DOGE, SHIB, PEPE
+
+### 🤖 Enhanced Trading Bot Features
+
+#### **90-Day Historical Data Analysis**
+- **Comprehensive Data**: 90 days of hourly and 15-minute price data
+- **Technical Indicators**: RSI, MACD, Bollinger Bands, Moving Averages
+- **Volume Analysis**: Volume surge detection and confirmation
+- **Multi-timeframe Analysis**: Combines 1-hour and 15-minute data for better signals
+
+#### **Advanced Trading Strategies**
+- **Multi-Timeframe Momentum**: Detects momentum across different timeframes
+- **Mean Reversion with RSI**: Identifies oversold/overbought conditions
+- **Bollinger Band Breakouts**: Catches breakouts from price squeezes
+- **Volume Surge Detection**: Trades on unusual volume spikes
+
+#### **Intelligent Signal Combination**
+- **Weighted Strategy Scoring**: Each strategy has configurable weight
+- **Confidence Thresholds**: Only executes high-confidence trades (60%+)
+- **Risk-Adjusted Position Sizing**: Position size based on signal strength
+- **Multi-wallet Coordination**: Spreads trades across available wallets
 
 ## 📊 Performance Monitoring
 

@@ -289,6 +289,76 @@ export class TokenDatabase {
                 marketCap: 400000000
             }
         ]);
+
+        // PulseChain (Chain ID: 369)
+        this.addTokens(369, [
+            {
+                symbol: 'PLS',
+                name: 'Pulse',
+                address: '0x0000000000000000000000000000000000000000',
+                decimals: 18,
+                logoURI: 'https://assets.coingecko.com/coins/images/27044/thumb/pulse-logo.png',
+                coingeckoId: 'pulsechain',
+                category: 'native',
+                volume24h: 50000000,
+                marketCap: 15000000000
+            },
+            {
+                symbol: 'PLSX',
+                name: 'PulseX',
+                address: '0x95B303987A60C71504D99Aa1b13B4DA07b0790ab',
+                decimals: 18,
+                logoURI: 'https://assets.coingecko.com/coins/images/27045/thumb/pulsex-logo.png',
+                coingeckoId: 'pulsex',
+                category: 'defi',
+                volume24h: 80000000,
+                marketCap: 8000000000
+            },
+            {
+                symbol: 'HEX',
+                name: 'HEX',
+                address: '0x2b591e99afE9f32eAA6214f7B7629768c40Eeb39',
+                decimals: 8,
+                logoURI: 'https://assets.coingecko.com/coins/images/10103/thumb/HEX-logo.png',
+                coingeckoId: 'hex',
+                category: 'defi',
+                volume24h: 120000000,
+                marketCap: 45000000000
+            },
+            {
+                symbol: 'WPLS',
+                name: 'Wrapped Pulse',
+                address: '0xA1077a294dDE1B09bB078844df40758a5D0f9a27',
+                decimals: 18,
+                logoURI: 'https://assets.coingecko.com/coins/images/27044/thumb/pulse-logo.png',
+                coingeckoId: 'pulsechain',
+                category: 'wrapped',
+                volume24h: 35000000,
+                marketCap: 2000000000
+            },
+            {
+                symbol: 'INC',
+                name: 'Incentive',
+                address: '0x2fa878Ab3F87CC1C9737Fc071108F904c0B0C95d',
+                decimals: 18,
+                logoURI: 'https://assets.coingecko.com/coins/images/27046/thumb/inc-logo.png',
+                coingeckoId: 'incentive',
+                category: 'defi',
+                volume24h: 15000000,
+                marketCap: 500000000
+            },
+            {
+                symbol: 'TEXAN',
+                name: 'Texan',
+                address: '0x7238390d5f6F64e67c3211C343A410E2A3DEc142',
+                decimals: 8,
+                logoURI: 'https://assets.coingecko.com/coins/images/27047/thumb/texan-logo.png',
+                coingeckoId: 'texan',
+                category: 'meme',
+                volume24h: 8000000,
+                marketCap: 200000000
+            }
+        ]);
     }
 
     addTokens(chainId, tokens) {
@@ -407,6 +477,7 @@ export class TokenDatabase {
             { chainId: 1, name: 'Ethereum', symbol: 'ETH', explorer: 'https://etherscan.io' },
             { chainId: 56, name: 'Binance Smart Chain', symbol: 'BNB', explorer: 'https://bscscan.com' },
             { chainId: 137, name: 'Polygon', symbol: 'MATIC', explorer: 'https://polygonscan.com' },
+            { chainId: 369, name: 'PulseChain', symbol: 'PLS', explorer: 'https://scan.pulsechain.com' },
             { chainId: 42161, name: 'Arbitrum', symbol: 'ETH', explorer: 'https://arbiscan.io' }
         ];
     }

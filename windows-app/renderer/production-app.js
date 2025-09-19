@@ -9,6 +9,8 @@ import { DEXIntegration } from './dex-integration.js';
 import { ProductionTradingEngine } from './production-trading-engine.js';
 import { CrossChainBridge } from './cross-chain-bridge.js';
 import { FundingInterface } from './funding-interface.js';
+import { HistoricalDataService } from './historical-data-service.js';
+import { EnhancedTradingBot } from './enhanced-trading-bot.js';
 
 class ProductionApp {
     constructor() {
@@ -29,6 +31,13 @@ class ProductionApp {
         );
         this.crossChainBridge = new CrossChainBridge();
         this.fundingInterface = new FundingInterface(this.multiWalletManager);
+        this.historicalDataService = new HistoricalDataService();
+        this.enhancedTradingBot = new EnhancedTradingBot(
+            this.multiWalletManager,
+            this.tokenDatabase,
+            this.productionTradingEngine,
+            this.dexIntegration
+        );
 
         // Application state
         this.currentView = 'dashboard';
