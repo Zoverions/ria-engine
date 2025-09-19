@@ -11,6 +11,7 @@ import { CrossChainBridge } from './cross-chain-bridge.js';
 import { FundingInterface } from './funding-interface.js';
 import { HistoricalDataService } from './historical-data-service.js';
 import { EnhancedTradingBot } from './enhanced-trading-bot.js';
+import { RIAEnhancedTradingBot } from './ria-enhanced-trading-bot.js';
 
 class ProductionApp {
     constructor() {
@@ -33,6 +34,12 @@ class ProductionApp {
         this.fundingInterface = new FundingInterface(this.multiWalletManager);
         this.historicalDataService = new HistoricalDataService();
         this.enhancedTradingBot = new EnhancedTradingBot(
+            this.multiWalletManager,
+            this.tokenDatabase,
+            this.productionTradingEngine,
+            this.dexIntegration
+        );
+        this.riaTradingBot = new RIAEnhancedTradingBot(
             this.multiWalletManager,
             this.tokenDatabase,
             this.productionTradingEngine,
@@ -658,6 +665,90 @@ class ProductionApp {
                 `).join('')}
             </div>
         `;
+    }
+
+    // Enhanced Trading Bot Controls
+    async startEnhancedBot() {
+        try {
+            const wallets = await this.multiWalletManager.getAllWallets();
+            if (wallets.length === 0) {
+                this.showNotification('Please create at least one wallet first', 'warning');
+                return;
+            }
+
+            const walletIds = wallets.map(w => w.id);
+            const tokens = ['bitcoin', 'ethereum', 'usd-coin', 'pulsechain'];
+            const chains = [1, 56, 137, 369, 42161];
+
+            await this.enhancedTradingBot.startBot(walletIds, tokens, chains);
+            this.showNotification('Enhanced Trading Bot started with 90-day analysis', 'success');
+            
+            // Update UI
+            document.getElementById('start-enhanced-bot-btn').style.display = 'none';
+            document.getElementById('stop-enhanced-bot-btn').style.display = 'inline-block';
+            
+        } catch (error) {
+            this.showNotification(`Failed to start Enhanced Bot: ${error.message}`, 'error');
+        }
+    }
+
+    async stopEnhancedBot() {
+        try {
+            this.enhancedTradingBot.stopBot();
+            this.showNotification('Enhanced Trading Bot stopped', 'info');
+            
+            // Update UI
+            document.getElementById('start-enhanced-bot-btn').style.display = 'inline-block';
+            document.getElementById('stop-enhanced-bot-btn').style.display = 'none';
+            
+        } catch (error) {
+            this.showNotification(`Failed to stop Enhanced Bot: ${error.message}`, 'error');
+        }
+    }
+
+    // RIA Trading Bot Controls
+    async startRIABot() {
+        try {
+            const wallets = await this.multiWalletManager.getAllWallets();
+            if (wallets.length === 0) {
+                this.showNotification('Please create at least one wallet first', 'warning');
+                return;
+            }
+
+            const walletIds = wallets.map(w => w.id);
+            const tokens = ['bitcoin', 'ethereum', 'usd-coin', 'pulsechain', 'hex'];
+            const chains = [1, 56, 137, 369, 42161];
+
+            this.showNotification('Starting RIA-Enhanced Bot with Market Fracture Analysis...', 'info');
+            
+            await this.riaTradingBot.startRIABot(walletIds, tokens, chains);
+            this.showNotification('🧠 RIA-Enhanced Trading Bot started successfully!', 'success');
+            
+            // Update UI
+            document.getElementById('start-ria-bot-btn').style.display = 'none';
+            document.getElementById('stop-ria-bot-btn').style.display = 'inline-block';
+            document.getElementById('ria-bot-status').textContent = 'Running';
+            document.getElementById('ria-bot-status').className = 'status-indicator online';
+            
+        } catch (error) {
+            this.showNotification(`Failed to start RIA Bot: ${error.message}`, 'error');
+        }
+    }
+
+    async stopRIABot() {
+        try {
+            this.riaTradingBot.stopRIABot();
+            this.showNotification('🛑 RIA-Enhanced Trading Bot stopped', 'info');
+            
+            // Update UI
+            document.getElementById('start-ria-bot-btn').style.display = 'inline-block';
+            document.getElementById('stop-ria-bot-btn').style.display = 'none';
+            document.getElementById('ria-bot-status').textContent = 'Stopped';
+            document.getElementById('ria-bot-status').className = 'status-indicator offline';
+            
+        } catch (error) {
+            this.showNotification(`Failed to stop RIA Bot: ${error.message}`, 'error');
+        }
     }
 }
 

@@ -218,6 +218,21 @@ riskLimits: {
 - **Bollinger Band Breakouts**: Catches breakouts from price squeezes
 - **Volume Surge Detection**: Trades on unusual volume spikes
 
+#### **🧠 RIA-Enhanced Trading Bot Features**
+- **Market Fracture Index (MFI)**: Advanced systemic risk detection
+- **RIA Spectral Analysis**: Deep pattern recognition using spectral slopes
+- **Resonance Pattern Detection**: Identifies price-volume resonance patterns
+- **Antifragile Learning**: Adaptive learning from market stress events
+- **Multi-scale Analysis**: Wavelet and fractal dimension analysis
+- **Risk-Adjusted Positioning**: Dynamic position sizing based on MFI levels
+
+#### **Market Fracture Index Levels**
+- **Stable (MFI < 0.25)**: Normal trading, full position sizes
+- **Gentle Warning (0.25-0.55)**: Reduce position sizes by 40%
+- **Moderate Alert (0.55-0.8)**: Hedge positions, reduce sizes by 60%
+- **Aggressive Warning (0.8-0.95)**: Emergency protocols, reduce by 90%
+- **Critical Fracture (>0.95)**: Complete market exit protocols
+
 #### **Intelligent Signal Combination**
 - **Weighted Strategy Scoring**: Each strategy has configurable weight
 - **Confidence Thresholds**: Only executes high-confidence trades (60%+)
