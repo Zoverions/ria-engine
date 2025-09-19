@@ -206,44 +206,67 @@ export class SpectralProcessor {
    */
   extractSpectralFeatures(fftResult) {
     const powerSpectrum = this.computePowerSpectrum(fftResult);
+    
+    // Only use the positive frequency half of the spectrum
+    const halfLength = Math.floor(powerSpectrum.length / 2);
+    const positivePowerSpectrum = powerSpectrum.slice(0, halfLength);
     const freqs = this.getFrequencyBins();
+    
+    // Ensure frequency bins match power spectrum length
+    const minLength = Math.min(positivePowerSpectrum.length, freqs.length);
+    const validPowerSpectrum = positivePowerSpectrum.slice(0, minLength);
+    const validFreqs = freqs.slice(0, minLength);
     
     // Spectral centroid
     let numerator = 0;
     let denominator = 0;
-    for (let i = 0; i < powerSpectrum.length; i++) {
-      numerator += freqs[i] * powerSpectrum[i];
-      denominator += powerSpectrum[i];
+    for (let i = 0; i < validPowerSpectrum.length; i++) {
+      const power = validPowerSpectrum[i];
+      const freq = validFreqs[i];
+      
+      if (power > 0 && !isNaN(power) && !isNaN(freq)) {
+        numerator += freq * power;
+        denominator += power;
+      }
     }
     const centroid = denominator > 0 ? numerator / denominator : 0;
     
     // Spectral bandwidth
     let bandwidthNumerator = 0;
-    for (let i = 0; i < powerSpectrum.length; i++) {
-      const diff = freqs[i] - centroid;
-      bandwidthNumerator += diff * diff * powerSpectrum[i];
+    for (let i = 0; i < validPowerSpectrum.length; i++) {
+      const power = validPowerSpectrum[i];
+      const freq = validFreqs[i];
+      
+      if (power > 0 && !isNaN(power) && !isNaN(freq)) {
+        const diff = freq - centroid;
+        bandwidthNumerator += diff * diff * power;
+      }
     }
     const bandwidth = denominator > 0 ? Math.sqrt(bandwidthNumerator / denominator) : 0;
     
     // Spectral rolloff (85% of energy)
-    const totalEnergy = powerSpectrum.reduce((sum, val) => sum + val, 0);
+    const totalEnergy = validPowerSpectrum.reduce((sum, val) => sum + (isNaN(val) ? 0 : val), 0);
     const rolloffThreshold = 0.85 * totalEnergy;
     let cumulativeEnergy = 0;
     let rolloff = 0;
-    for (let i = 0; i < powerSpectrum.length; i++) {
-      cumulativeEnergy += powerSpectrum[i];
-      if (cumulativeEnergy >= rolloffThreshold) {
-        rolloff = freqs[i];
-        break;
+    
+    for (let i = 0; i < validPowerSpectrum.length; i++) {
+      const power = validPowerSpectrum[i];
+      if (!isNaN(power)) {
+        cumulativeEnergy += power;
+        if (cumulativeEnergy >= rolloffThreshold) {
+          rolloff = validFreqs[i];
+          break;
+        }
       }
     }
     
     return {
-      centroid,
-      bandwidth,
-      rolloff,
-      energy: totalEnergy,
-      entropy: this.computeSpectralEntropy(powerSpectrum)
+      centroid: isNaN(centroid) ? 0 : centroid,
+      bandwidth: isNaN(bandwidth) ? 0 : bandwidth,
+      rolloff: isNaN(rolloff) ? 0 : rolloff,
+      energy: isNaN(totalEnergy) ? 0 : totalEnergy,
+      entropy: this.computeSpectralEntropy(validPowerSpectrum)
     };
   }
 
@@ -265,18 +288,20 @@ export class SpectralProcessor {
    * Compute spectral entropy
    */
   computeSpectralEntropy(powerSpectrum) {
-    const total = powerSpectrum.reduce((sum, val) => sum + val, 0);
-    if (total === 0) return 0;
+    const validPowerSpectrum = powerSpectrum.filter(val => !isNaN(val) && val > 0);
+    const total = validPowerSpectrum.reduce((sum, val) => sum + val, 0);
+    
+    if (total === 0 || validPowerSpectrum.length === 0) return 0;
     
     let entropy = 0;
-    for (const power of powerSpectrum) {
+    for (const power of validPowerSpectrum) {
       if (power > 0) {
         const probability = power / total;
         entropy -= probability * Math.log2(probability);
       }
     }
     
-    return entropy;
+    return isNaN(entropy) ? 0 : entropy;
   }
 
   /**
