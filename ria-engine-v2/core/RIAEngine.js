@@ -1,12 +1,17 @@
 /**
- * RIA Engine v2.0 - Complete Production Architecture
+ * RIA Engine v2.1 - Complete Production Architecture with Novel Enhancements
  * 
  * A comprehensive, enterprise-grade Resonant Interface Architecture engine
  * designed for scalability, extensibility, and production deployment across
  * multiple platforms and use cases.
  * 
+ * NEW IN v2.1:
+ * - Generative Interventions: Proactive context-aware assistance
+ * - Multi-Sensory Resonance: Adaptive audio and haptic feedback
+ * - Antifragile Learning: Reinforcement learning from attention fractures
+ * 
  * @author Zoverions Grand Unified Model ZGUM v16.2
- * @version 2.0.0
+ * @version 2.1.0
  * @date September 19, 2025
  */
 
@@ -18,6 +23,9 @@ import { MLPersonalization } from '../ml/MLPersonalization.js';
 import { PluginManager } from '../plugins/PluginManager.js';
 import { ConfigManager } from './config/ConfigManager.js';
 import { Logger } from './utils/Logger.js';
+import { GenerativeInterventionManager } from '../generative/GenerativeInterventionManager.js';
+import { MultiSensoryResonanceManager } from '../resonance/MultiSensoryResonanceManager.js';
+import { AntifragileManager } from '../antifragile/AntifragileManager.js';
 
 /**
  * Main RIA Engine class - orchestrates all subsystems
@@ -33,12 +41,17 @@ export class RIAEngine extends EventEmitter {
     // Initialize logging
     this.logger = new Logger(this.config.get('logging'));
     
-    // Initialize core subsystems
+        // Initialize core subsystems
+    this.biometricManager = new BiometricManager(this.config.get('biometrics'));
+    this.mlPersonalization = new MLPersonalization(this.config.get('ml'));
+    this.analyticsEngine = new AnalyticsEngine(this.config.get('analytics'));
     this.mathCore = new MathCore(this.config.get('math'));
-    this.analytics = new AnalyticsEngine(this.config.get('analytics'));
-    this.biometrics = new BiometricManager(this.config.get('biometrics'));
-    this.ml = new MLPersonalization(this.config.get('ml'));
-    this.plugins = new PluginManager(this.config.get('plugins'));
+    this.logger = new Logger(this.config.get('logger'));
+    
+    // Initialize RIA v2.1 enhancement subsystems
+    this.generativeManager = new GenerativeInterventionManager(this.config.get('generative'));
+    this.resonanceManager = new MultiSensoryResonanceManager(this.config.get('resonance'));
+    this.antifragileManager = new AntifragileManager(this.config.get('antifragile'));
     
     // Engine state
     this.state = {
@@ -61,10 +74,11 @@ export class RIAEngine extends EventEmitter {
     // Initialize subsystems
     this.initialize();
     
-    this.logger.info('RIA Engine v2.0 initialized', {
-      version: '2.0.0',
+    this.logger.info('RIA Engine v2.1 initialized', {
+      version: '2.1.0',
       timestamp: new Date().toISOString(),
-      config: this.config.summary()
+      config: this.config.summary(),
+      enhancements: ['generative_interventions', 'multi_sensory_resonance', 'antifragile_learning']
     });
   }
 
@@ -73,33 +87,25 @@ export class RIAEngine extends EventEmitter {
    */
   async initialize() {
     try {
-      // Initialize math core with optimized algorithms
-      await this.mathCore.initialize();
+      this.logger.info('Initializing RIA Engine v2.1 with novel enhancements...');
       
-      // Initialize analytics with cloud connectivity
-      await this.analytics.initialize();
+      // Initialize core subsystems in order
+      await this.biometricManager.initialize();
+      await this.mlPersonalization.initialize?.();
+      await this.analyticsEngine.initialize();
       
-      // Initialize biometric sensors
-      await this.biometrics.initialize();
+      // Initialize RIA v2.1 enhancement subsystems
+      await this.generativeManager.initialize?.();
+      await this.resonanceManager.initialize();
+      await this.antifragileManager.initialize?.();
       
-      // Initialize ML models
-      await this.ml.initialize();
+      this.state.initialized = true;
+      this.logger.info('RIA Engine v2.1 initialized successfully with Generative Interventions, Multi-Sensory Resonance, and Antifragile Learning');
       
-      // Initialize plugins
-      await this.plugins.initialize();
-      
-      // Set up event listeners
-      this.setupEventListeners();
-      
-      // Emit ready event
-      this.emit('ready', {
-        engine: 'RIA Engine v2.0',
-        timestamp: Date.now(),
-        subsystems: this.getSubsystemStatus()
-      });
+      this.emit('initialized');
       
     } catch (error) {
-      this.logger.error('Failed to initialize RIA Engine', error);
+      this.logger.error('RIA Engine v2.1 initialization failed:', error);
       this.emit('error', error);
       throw error;
     }
@@ -171,32 +177,27 @@ export class RIAEngine extends EventEmitter {
    * Stop the RIA Engine processing
    */
   async stop() {
-    if (!this.state.isRunning) {
-      this.logger.warn('Engine not running');
-      return;
+    try {
+      this.logger.info('Stopping RIA Engine v2.1...');
+      
+      // Stop core subsystems
+      await this.biometricManager.stop();
+      await this.analyticsEngine.stop?.();
+      
+      // Stop enhancement subsystems
+      await this.resonanceManager.stop();
+      // Generative and Antifragile managers are stateless and don't need explicit stopping
+      
+      this.state.running = false;
+      this.logger.info('RIA Engine v2.1 stopped - all enhancement systems deactivated');
+      
+      this.emit('stopped');
+      
+    } catch (error) {
+      this.logger.error('Error stopping RIA Engine v2.1:', error);
+      this.emit('error', error);
+      throw error;
     }
-    
-    this.state.isRunning = false;
-    
-    // Stop all subsystems
-    await Promise.all([
-      this.mathCore.stop(),
-      this.analytics.stop(),
-      this.biometrics.stop(),
-      this.ml.stop(),
-      this.plugins.stop()
-    ]);
-    
-    this.logger.info('RIA Engine stopped', {
-      duration: Date.now() - this.state.startTime,
-      totalFrames: this.state.frameCount,
-      avgFrameTime: this.state.performance.avgFrameTime
-    });
-    
-    this.emit('stopped', { 
-      timestamp: Date.now(),
-      sessionStats: this.getSessionStats()
-    });
   }
 
   /**
@@ -463,13 +464,19 @@ export class RIAEngine extends EventEmitter {
   getStatus() {
     return {
       engine: {
-        version: '2.0.0',
+        version: '2.1.0',
         isRunning: this.state.isRunning,
         uptime: this.state.startTime ? Date.now() - this.state.startTime : 0,
         frameCount: this.state.frameCount,
         performance: this.state.performance
       },
       subsystems: this.getSubsystemStatus(),
+      // RIA v2.1 Enhancement Systems Status
+      enhancements: {
+        generative: this.generativeManager.getStats(),
+        resonance: this.resonanceManager.getStatus(),
+        antifragile: this.antifragileManager.getStatus()
+      },
       dataStreams: Array.from(this.dataStreams.entries()).map(([id, stream]) => ({
         id,
         ...stream
@@ -519,10 +526,11 @@ export class RIAEngine extends EventEmitter {
   async exportSessionData(format = 'json') {
     const sessionData = {
       metadata: {
-        engine: 'RIA Engine v2.0',
-        version: '2.0.0',
+        engine: 'RIA Engine v2.1',
+        version: '2.1.0',
         exportTime: new Date().toISOString(),
-        session: this.getSessionStats()
+        session: this.getSessionStats(),
+        enhancements: ['generative_interventions', 'multi_sensory_resonance', 'antifragile_learning']
       },
       analytics: await this.analytics.exportData(),
       results: this.resultBuffer,
