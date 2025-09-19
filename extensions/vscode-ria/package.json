@@ -1,0 +1,209 @@
+{
+  "name": "ria-cognitive-enhancement",
+  "displayName": "RIA Cognitive Enhancement",
+  "description": "Revolutionary cognitive load management and focus enhancement for developers using RIA Engine v2.1",
+  "version": "2.1.0",
+  "publisher": "zoverions",
+  "icon": "resources/ria-icon.png",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Education"
+  ],
+  "keywords": [
+    "cognitive",
+    "focus",
+    "productivity",
+    "attention",
+    "biometric",
+    "ai",
+    "enhancement"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ria.enable",
+        "title": "Enable RIA Cognitive Enhancement",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.disable",
+        "title": "Disable RIA Cognitive Enhancement",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.showStatus",
+        "title": "Show RIA Status",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.openSettings",
+        "title": "Open RIA Settings",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.exportData",
+        "title": "Export RIA Session Data",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.showInsights",
+        "title": "Show Cognitive Insights",
+        "category": "RIA"
+      }
+    ],
+    "configuration": {
+      "type": "object",
+      "title": "RIA Cognitive Enhancement",
+      "properties": {
+        "ria.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable RIA cognitive enhancement"
+        },
+        "ria.biometric.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable biometric monitoring (if available)"
+        },
+        "ria.generative.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable generative interventions"
+        },
+        "ria.resonance.audioEnabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable audio resonance feedback"
+        },
+        "ria.resonance.hapticEnabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable haptic feedback (if available)"
+        },
+        "ria.antifragile.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable antifragile learning"
+        },
+        "ria.ui.opacityDamping": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable UI opacity damping when cognitive load is high"
+        },
+        "ria.ui.colorTemperature": {
+          "type": "boolean",
+          "default": true,
+          "description": "Adjust color temperature based on cognitive state"
+        },
+        "ria.notifications.priority": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "default": "medium",
+          "description": "RIA notification priority level"
+        },
+        "ria.privacy.dataCollection": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow anonymous data collection for system improvement"
+        },
+        "ria.sensitivity": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "default": "medium",
+          "description": "RIA intervention sensitivity level"
+        }
+      }
+    },
+    "statusBarItems": [
+      {
+        "id": "ria.status",
+        "name": "RIA Status",
+        "text": "RIA",
+        "tooltip": "RIA Cognitive Enhancement Status",
+        "command": "ria.showStatus",
+        "alignment": "right",
+        "priority": 100
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ria-explorer",
+          "title": "RIA Cognitive Enhancement",
+          "icon": "$(pulse)"
+        }
+      ]
+    },
+    "views": {
+      "ria-explorer": [
+        {
+          "id": "ria.cognitiveStatus",
+          "name": "Cognitive Status",
+          "type": "webview"
+        },
+        {
+          "id": "ria.insights",
+          "name": "Focus Insights",
+          "type": "tree"
+        },
+        {
+          "id": "ria.interventions",
+          "name": "Active Interventions",
+          "type": "tree"
+        }
+      ]
+    },
+    "colors": [
+      {
+        "id": "ria.focusState.optimal",
+        "description": "Color for optimal focus state",
+        "defaults": {
+          "dark": "#00ff00",
+          "light": "#008000"
+        }
+      },
+      {
+        "id": "ria.focusState.moderate",
+        "description": "Color for moderate focus state",
+        "defaults": {
+          "dark": "#ffff00",
+          "light": "#ffa500"
+        }
+      },
+      {
+        "id": "ria.focusState.impaired",
+        "description": "Color for impaired focus state",
+        "defaults": {
+          "dark": "#ff4444",
+          "light": "#cc0000"
+        }
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "@types/node": "16.x",
+    "typescript": "^4.4.4"
+  },
+  "dependencies": {
+    "ws": "^8.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Zoverions/ria-engine"
+  },
+  "license": "MIT"
+}

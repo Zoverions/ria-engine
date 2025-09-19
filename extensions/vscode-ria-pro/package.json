@@ -1,0 +1,150 @@
+{
+  "name": "ria-cognitive-enhancer",
+  "displayName": "RIA Cognitive Enhancer",
+  "description": "AI-powered cognitive load management and focus enhancement for VS Code",
+  "version": "2.1.0",
+  "publisher": "zoverions",
+  "engines": {
+    "vscode": "^1.70.0"
+  },
+  "categories": [
+    "Other",
+    "Machine Learning",
+    "Education"
+  ],
+  "keywords": [
+    "cognitive load",
+    "focus",
+    "AI",
+    "productivity",
+    "attention",
+    "biometrics"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "ria.start",
+        "title": "Start RIA Engine",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.stop",
+        "title": "Stop RIA Engine",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.showStatus",
+        "title": "Show RIA Status",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.settings",
+        "title": "RIA Settings",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.focusMode",
+        "title": "Enter Focus Mode",
+        "category": "RIA"
+      },
+      {
+        "command": "ria.resetLearning",
+        "title": "Reset Antifragile Learning",
+        "category": "RIA"
+      }
+    ],
+    "configuration": {
+      "title": "RIA Cognitive Enhancer",
+      "properties": {
+        "ria.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable RIA cognitive enhancement"
+        },
+        "ria.generativeInterventions": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable proactive context-aware assistance"
+        },
+        "ria.multiSensoryResonance": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable adaptive audio feedback"
+        },
+        "ria.antifraggileLearning": {
+          "type": "boolean",
+          "default": true,
+          "description": "Enable learning from cognitive fractures"
+        },
+        "ria.sensitivityLevel": {
+          "type": "string",
+          "enum": ["low", "medium", "high"],
+          "default": "medium",
+          "description": "Cognitive load sensitivity level"
+        },
+        "ria.interventionThreshold": {
+          "type": "number",
+          "default": 0.6,
+          "minimum": 0.1,
+          "maximum": 0.9,
+          "description": "Fracture Index threshold for interventions"
+        },
+        "ria.audioFeedback": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable audio feedback (experimental)"
+        },
+        "ria.debugMode": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable debug logging"
+        }
+      }
+    },
+    "statusBarItems": [
+      {
+        "id": "ria.status",
+        "alignment": "right",
+        "priority": 100
+      }
+    ],
+    "views": {
+      "explorer": [
+        {
+          "id": "riaInsights",
+          "name": "RIA Cognitive Insights",
+          "when": "ria.enabled"
+        }
+      ]
+    },
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "ria.start",
+          "when": "!ria.running"
+        },
+        {
+          "command": "ria.stop",
+          "when": "ria.running"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.70.0",
+    "@types/node": "16.x",
+    "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "ws": "^8.13.0"
+  }
+}

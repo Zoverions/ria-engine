@@ -1,0 +1,17 @@
+{
+  "name": "RIA Cognitive Design Enhancer",
+  "id": "ria-cognitive-enhancer",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "editorType": [
+    "figma",
+    "figjam"
+  ],
+  "networkAccess": {
+    "allowedDomains": [
+      "none"
+    ]
+  }
+}
