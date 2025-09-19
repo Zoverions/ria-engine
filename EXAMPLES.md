@@ -1,498 +1,737 @@
-# RIA v1 Prototype - Usage Examples
+# 🧠 RIA Engine v2.1 - Comprehensive Usage Examples
 
-## Example 1: Basic Figma Plugin Usage
+## 🚀 Platform Integration Examples
 
-### Setup and Initialization
+### 🔧 VS Code Extension Usage
+
+#### Basic Integration and Setup
+
+```typescript
+// Automatic activation - extension activates on workspace open
+// Configure via VS Code settings.json:
+{
+  "ria.enabled": true,
+  "ria.analysisFrequency": 2000,
+  "ria.optimizationLevel": "balanced",
+  "ria.enhancementVectors": {
+    "generativeInterventions": true,
+    "multiSensoryResonance": true,
+    "antifragileMode": true
+  }
+}
+```
+
+#### Advanced VS Code Integration
+
+```typescript
+import * as vscode from 'vscode';
+import { RIAExtension } from './riaExtension';
+
+// Monitor cognitive state during coding
+class CodingSessionMonitor {
+  private riaExtension: RIAExtension;
+  private statusBarItem: vscode.StatusBarItem;
+  
+  constructor() {
+    this.riaExtension = RIAExtension.getInstance();
+    this.setupStatusBar();
+    this.setupEventListeners();
+  }
+  
+  private setupEventListeners() {
+    // Monitor document changes for complexity analysis
+    vscode.workspace.onDidChangeTextDocument((event) => {
+      this.analyzeCodingComplexity(event.document);
+    });
+    
+    // Track debug sessions for stress detection
+    vscode.debug.onDidStartDebugSession(() => {
+      this.riaExtension.setContext('debugging', true);
+    });
+    
+    // Monitor cognitive state changes
+    this.riaExtension.onCognitiveStateChange((state) => {
+      this.updateStatusBar(state);
+      this.applyAdaptiveInterventions(state);
+    });
+  }
+  
+  private async analyzeCodingComplexity(document: vscode.TextDocument) {
+    const text = document.getText();
+    const language = document.languageId;
+    
+    // Language-specific complexity analysis
+    const complexity = await this.calculateCodeComplexity(text, language);
+    
+    // Update RIA with coding context
+    this.riaExtension.updateContext({
+      task: 'coding',
+      language: language,
+      complexity: complexity,
+      fileSize: text.length
+    });
+  }
+  
+  private applyAdaptiveInterventions(state: CognitiveState) {
+    if (state.fractureIndex > 0.7) {
+      // Suggest break or focus assistance
+      vscode.window.showInformationMessage(
+        '🧠 High cognitive load detected. Consider taking a break?',
+        'Take Break', 'Focus Mode', 'Continue'
+      ).then(selection => {
+        if (selection === 'Focus Mode') {
+          this.activateFocusMode();
+        }
+      });
+    }
+  }
+}
+```
+
+### 🎨 Figma Plugin Usage
+
+#### Real-Time Design Complexity Analysis
 
 ```javascript
-// Basic setup in Figma plugin environment
-const ria = new RIAEngine('average', true, 'champion');
-
-// Handle cursor movement for phi proxy generation
-figma.ui.onmessage = msg => {
-  if (msg.type === 'cursor_move') {
-    const entropy = calculatePhiProxy(msg.x, msg.y);
-    const result = ria.process_frame(entropy, Math.random());
+// Figma Plugin: Real-time design complexity monitoring
+class FigmaRIAIntegration {
+  constructor() {
+    this.riaEngine = new RIAEngine({
+      generativeInterventions: true,
+      multiSensoryResonance: true,
+      antifragileMode: true
+    });
+    this.setupDesignAnalysis();
+  }
+  
+  setupDesignAnalysis() {
+    // Monitor selection changes
+    figma.on('selectionchange', () => {
+      this.analyzeSelectedFrames();
+    });
     
-    // Apply UI deltas to selected elements
-    figma.currentPage.selection.forEach(node => {
-      if (result.ui_update.gamma < 1.0) {
-        node.opacity *= result.ui_update.gamma;
+    // Monitor document changes
+    figma.on('documentchange', () => {
+      this.scheduleComplexityUpdate();
+    });
+  }
+  
+  async analyzeSelectedFrames() {
+    const selection = figma.currentPage.selection;
+    
+    for (const node of selection) {
+      if (node.type === 'FRAME') {
+        const complexity = await this.analyzeFrameComplexity(node);
+        
+        // Update RIA with design context
+        this.riaEngine.updateContext({
+          task: 'design',
+          frameComplexity: complexity.totalComplexity,
+          visualDensity: complexity.visualComplexity,
+          interactiveElements: complexity.interactiveComplexity
+        });
+        
+        // Apply cognitive-aware optimizations
+        this.applyDesignOptimizations(node, complexity);
+      }
+    }
+  }
+  
+  async analyzeFrameComplexity(frame) {
+    return {
+      totalComplexity: this.calculateTotalComplexity(frame),
+      visualComplexity: this.calculateVisualComplexity(frame),
+      structuralComplexity: this.calculateStructuralComplexity(frame),
+      interactiveComplexity: this.calculateInteractiveComplexity(frame)
+    };
+  }
+  
+  applyDesignOptimizations(frame, complexity) {
+    if (complexity.totalComplexity > 8.0) {
+      // Suggest simplification
+      figma.notify('🧠 High design complexity detected. Consider simplification.');
+      
+      // Apply subtle visual hints
+      frame.effects = [{
+        type: 'DROP_SHADOW',
+        color: { r: 1, g: 0.6, b: 0.2, a: 0.3 },
+        offset: { x: 0, y: 0 },
+        radius: 4,
+        visible: true,
+        blendMode: 'NORMAL'
+      }];
+    }
+  }
+}
+
+// Initialize plugin
+new FigmaRIAIntegration();
+```
+
+### 🌐 Browser Extension Usage
+
+#### Content Script Integration
+
+```javascript
+// Content script: Real-time web page cognitive enhancement
+class WebPageRIAEnhancer {
+  constructor() {
+    this.riaEngine = new RIABackgroundService();
+    this.contentAnalyzer = new ContentAnalyzer();
+    this.interventionRenderer = new InterventionRenderer();
+    this.init();
+  }
+  
+  async init() {
+    await this.riaEngine.initialize();
+    this.setupPageAnalysis();
+    this.setupReadingAssistance();
+    this.setupFocusMode();
+  }
+  
+  setupPageAnalysis() {
+    // Analyze page complexity on load
+    this.analyzePageComplexity();
+    
+    // Monitor scroll and reading patterns
+    this.setupScrollTracking();
+    this.setupReadingProgressTracking();
+  }
+  
+  analyzePageComplexity() {
+    const complexity = this.contentAnalyzer.analyzePage(document.body);
+    
+    // Update RIA with web context
+    this.riaEngine.updateContext({
+      task: 'reading',
+      pageComplexity: complexity.overall,
+      textDensity: complexity.textDensity,
+      interactiveElements: complexity.interactiveCount,
+      mediaElements: complexity.mediaCount
+    });
+    
+    // Apply initial optimizations
+    this.applyPageOptimizations(complexity);
+  }
+  
+  setupReadingAssistance() {
+    // Monitor text reading patterns
+    const textElements = document.querySelectorAll('p, article, .content');
+    
+    textElements.forEach(element => {
+      this.addReadingEnhancements(element);
+    });
+  }
+  
+  addReadingEnhancements(element) {
+    const textComplexity = this.contentAnalyzer.analyzeTextComplexity(element.textContent);
+    
+    if (textComplexity > 0.7) {
+      // Add reading assistance
+      element.style.lineHeight = '1.6';
+      element.style.letterSpacing = '0.5px';
+      element.style.wordSpacing = '1px';
+      
+      // Highlight complex sentences
+      this.highlightComplexSentences(element);
+    }
+  }
+  
+  async setupFocusMode() {
+    // Listen for cognitive state changes
+    this.riaEngine.onCognitiveStateChange((state) => {
+      if (state.fractureIndex > 0.8) {
+        this.activateFocusMode();
+      } else if (state.fractureIndex < 0.3) {
+        this.deactivateFocusMode();
       }
     });
   }
-};
-```
-
-### Real-Time Monitoring
-
-```javascript
-// Monitor FI and trigger alerts
-function monitorSession(ria) {
-  setInterval(() => {
-    const state = ria.get_state();
-    
-    if (state.metrics.fir > 12) {
-      console.warn('High false intervention rate detected - consider tuning');
-    }
-    
-    if (state.last_fi > ria.th2) {
-      console.log('Attention fracture detected - applying aggressive intervention');
-    }
-  }, 1000);
-}
-```
-
-## Example 2: SwiftUI Integration
-
-### Basic View Modifier Application
-
-```swift
-import SwiftUI
-
-struct MyApp: App {
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-                .riaOverlay()  // Enable RIA for entire app
-        }
-    }
-}
-
-struct ContentView: View {
-    var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                Text("RIA-Enhanced Interface")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(0..<50) { index in
-                            CardView(title: "Item \(index)")
-                        }
-                    }
-                    .padding()
-                }
-            }
-        }
-    }
-}
-
-struct CardView: View {
-    let title: String
-    
-    var body: some View {
-        HStack {
-            RoundedRectangle(cornerRadius: 8)
-                .fill(.blue)
-                .frame(width: 50, height: 50)
-            
-            VStack(alignment: .leading) {
-                Text(title)
-                    .font(.headline)
-                Text("Sample content that may cause cognitive load")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
-            }
-            
-            Spacer()
-        }
-        .padding()
-        .background(.background, in: RoundedRectangle(cornerRadius: 12))
-    }
-}
-```
-
-### Custom RIA Configuration
-
-```swift
-struct CustomRIAView: View {
-    @StateObject private var riaEngine = RIAEngine(
-        profile: .neurodiverse,
-        biometricMode: true,
-        mode: .champion
-    )
-    
-    var body: some View {
-        VStack {
-            // Your content here
-            ComplexContentView()
-        }
-        .opacity(riaEngine.uiState.gamma)
-        .overlay(
-            // Custom coherence anchor
-            Circle()
-                .fill(.purple.opacity(0.6))
-                .frame(width: 40, height: 40)
-                .scaleEffect(1.0 + 0.3 * abs(riaEngine.uiState.anchorPhase))
-                .position(x: 100, y: 100)
-                .opacity(riaEngine.isActive ? 1 : 0)
-        )
-        .onAppear {
-            riaEngine.startMockDataGeneration()
-        }
-        .onDisappear {
-            riaEngine.stopMockDataGeneration()
-        }
-    }
-}
-```
-
-## Example 3: Advanced Configuration and Tuning
-
-### Profile-Based Initialization
-
-```javascript
-// Detect user behavior patterns and select appropriate profile
-function detectUserProfile(interactionHistory) {
-  const avgInteractionSpeed = calculateAverageSpeed(interactionHistory);
-  const errorRate = calculateErrorRate(interactionHistory);
   
-  if (avgInteractionSpeed > 2.0) {
-    return 'fast_typist';
-  } else if (errorRate > 0.15) {
-    return 'neurodiverse';
-  } else {
-    return 'average';
+  activateFocusMode() {
+    // Dim non-essential elements
+    const nonEssential = document.querySelectorAll('aside, .sidebar, .ads, nav');
+    nonEssential.forEach(el => {
+      el.style.opacity = '0.3';
+      el.style.filter = 'blur(2px)';
+    });
+    
+    // Enhance focus on main content
+    const mainContent = document.querySelector('main, article, .content');
+    if (mainContent) {
+      mainContent.style.boxShadow = '0 0 20px rgba(79, 70, 229, 0.3)';
+      mainContent.style.borderRadius = '8px';
+    }
+    
+    // Show focus mode indicator
+    this.interventionRenderer.showFocusModeIndicator();
   }
 }
 
-// Initialize with detected profile
-const profile = detectUserProfile(userHistory);
-const ria = new RIAEngine(profile, true, 'champion');
-```
-
-### Dynamic Threshold Adjustment
-
-```javascript
-// Adaptive threshold tuning based on session performance
-function adaptiveThresholds(ria) {
-  const state = ria.get_state();
-  const firRate = state.metrics.fir / Math.max(state.metrics.interventions, 1);
-  
-  // If too many false interventions, increase thresholds
-  if (firRate > 0.12) {
-    ria.th1 = Math.min(ria.th1 * 1.1, 1.0);
-    ria.th2 = Math.min(ria.th2 * 1.1, 1.5);
-    console.log(`Adjusted thresholds: th1=${ria.th1.toFixed(2)}, th2=${ria.th2.toFixed(2)}`);
-  }
-  
-  // If too few interventions but high fractures, decrease thresholds
-  const fractureRate = state.metrics.fractures / ria.frameCount;
-  if (firRate < 0.05 && fractureRate > 0.3) {
-    ria.th1 = Math.max(ria.th1 * 0.95, 0.5);
-    ria.th2 = Math.max(ria.th2 * 0.95, 0.8);
-    console.log(`Lowered thresholds: th1=${ria.th1.toFixed(2)}, th2=${ria.th2.toFixed(2)}`);
-  }
-}
-```
-
-## Example 4: Biometric Integration
-
-### HRV Sensor Integration (Pseudo-code)
-
-```javascript
-// Simulated HRV sensor integration
-class HRVSensor {
-  constructor() {
-    this.currentHRV = 0.7;  // Baseline
-    this.rrIntervals = [];
-  }
-  
-  // Simulate real HRV calculation from R-R intervals
-  calculateHRV() {
-    // In real implementation, this would connect to actual sensor
-    // e.g., Polar H10, Apple Watch, etc.
-    const rmssd = this.calculateRMSSD(this.rrIntervals);
-    return Math.max(0, Math.min(1, rmssd / 50));  // Normalize to 0-1
-  }
-  
-  calculateRMSSD(intervals) {
-    if (intervals.length < 2) return 30;  // Default
-    
-    let sumSquaredDiffs = 0;
-    for (let i = 1; i < intervals.length; i++) {
-      const diff = intervals[i] - intervals[i-1];
-      sumSquaredDiffs += diff * diff;
-    }
-    
-    return Math.sqrt(sumSquaredDiffs / (intervals.length - 1));
-  }
-}
-
-// Integration with RIA
-const hrvSensor = new HRVSensor();
-const ria = new RIAEngine('average', true, 'champion');
-
-setInterval(() => {
-  const hrv = hrvSensor.calculateHRV();
-  const phiProxy = calculateCurrentPhiProxy();
-  const result = ria.process_frame(phiProxy, hrv);
-  
-  // Apply UI modifications based on biometric-enhanced FI
-  applyUIModifications(result);
-}, 50);  // 20fps
-```
-
-## Example 5: Data Collection and Analysis
-
-### Session Data Export
-
-```javascript
-// Comprehensive session data collection
-function exportSessionData(ria) {
-  const state = ria.get_state();
-  const sessionDuration = (Date.now() - state.metrics.startTime) / 1000;
-  
-  const sessionData = {
-    timestamp: new Date().toISOString(),
-    profile: state.profile,
-    mode: state.mode,
-    session_duration_seconds: sessionDuration,
-    total_frames: ria.frameCount,
-    
-    // Performance metrics
-    fracture_count: state.metrics.fractures,
-    intervention_count: state.metrics.interventions,
-    false_intervention_count: state.metrics.fir,
-    
-    // Calculated rates
-    fracture_rate: state.metrics.fractures / ria.frameCount,
-    intervention_rate: state.metrics.interventions / ria.frameCount,
-    fir_rate: state.metrics.fir / Math.max(state.metrics.interventions, 1),
-    
-    // Final states
-    final_gamma: state.ui_state.gamma,
-    final_ncb_estimate: state.ncb_estimate,
-    
-    // Configuration
-    hyperparameters: {
-      th1: state.thresholds.th1,
-      th2: state.thresholds.th2,
-      aggr: state.damping.aggr,
-      gentle: state.damping.gentle,
-      fi_weights: state.weights
-    }
-  };
-  
-  // Save to file or send to analytics
-  downloadJSON(sessionData, `ria-session-${Date.now()}.json`);
-  
-  return sessionData;
-}
-
-function downloadJSON(data, filename) {
-  const blob = new Blob([JSON.stringify(data, null, 2)], { 
-    type: 'application/json' 
+// Initialize content script
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', () => {
+    new WebPageRIAEnhancer();
   });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
+} else {
+  new WebPageRIAEnhancer();
 }
 ```
 
-### Statistical Analysis
+## 🚀 Novel Enhancement Vector Examples
+
+### 🧠 Generative Interventions
+
+#### Contextual AI Assistance
 
 ```javascript
-// Analyze multiple session files for research
-function analyzeSessionBatch(sessionFiles) {
-  const analysis = {
-    total_sessions: sessionFiles.length,
-    avg_session_duration: 0,
-    avg_ncb: 0,
-    avg_fir_rate: 0,
-    profile_breakdown: {},
-    mode_effectiveness: {}
-  };
+// Generative intervention example for development context
+class GenerativeAssistance {
+  constructor(riaEngine) {
+    this.riaEngine = riaEngine;
+    this.interventionManager = new GenerativeInterventionManager();
+  }
   
-  sessionFiles.forEach(session => {
-    analysis.avg_session_duration += session.session_duration_seconds;
-    analysis.avg_ncb += session.final_ncb_estimate;
-    analysis.avg_fir_rate += session.fir_rate;
-    
-    // Profile breakdown
-    if (!analysis.profile_breakdown[session.profile]) {
-      analysis.profile_breakdown[session.profile] = {
-        count: 0,
-        avg_ncb: 0,
-        avg_fir: 0
+  async handleCodingAssistance(context) {
+    if (context.cognitiveLoad > 0.75 && context.task === 'debugging') {
+      const intervention = await this.interventionManager.generateIntervention({
+        context: 'debugging',
+        currentCode: context.codeContext,
+        errorType: context.errorType,
+        userExperience: context.userProfile.experience
+      });
+      
+      return {
+        type: 'proactive_suggestion',
+        message: intervention.suggestion,
+        actions: intervention.recommendedActions,
+        confidence: intervention.confidence
       };
     }
-    
-    const profile = analysis.profile_breakdown[session.profile];
-    profile.count++;
-    profile.avg_ncb += session.final_ncb_estimate;
-    profile.avg_fir += session.fir_rate;
-  });
+  }
   
-  // Calculate averages
-  analysis.avg_session_duration /= analysis.total_sessions;
-  analysis.avg_ncb /= analysis.total_sessions;
-  analysis.avg_fir_rate /= analysis.total_sessions;
-  
-  // Finalize profile breakdowns
-  Object.keys(analysis.profile_breakdown).forEach(profile => {
-    const data = analysis.profile_breakdown[profile];
-    data.avg_ncb /= data.count;
-    data.avg_fir /= data.count;
-  });
-  
-  console.log('Session Analysis:', analysis);
-  return analysis;
-}
-```
-
-## Example 6: Custom UI Interventions
-
-### Advanced UI Manipulation
-
-```javascript
-// Custom intervention strategies beyond simple opacity
-function applyAdvancedInterventions(result, elements) {
-  const { gamma, interveneType } = result.ui_update;
-  
-  elements.forEach(element => {
-    switch (interveneType) {
-      case 'gentle':
-        // Subtle blur and slight opacity reduction
-        element.style.filter = `blur(${(1-gamma) * 2}px)`;
-        element.style.opacity = gamma;
-        break;
-        
-      case 'aggressive':
-        // More dramatic effects
-        element.style.filter = `blur(${(1-gamma) * 5}px) grayscale(${(1-gamma) * 0.5})`;
-        element.style.opacity = gamma;
-        element.style.transform = `scale(${0.9 + gamma * 0.1})`;
-        break;
-        
-      default:
-        // Recovery phase - gradually restore
-        element.style.filter = '';
-        element.style.transform = '';
-        element.style.opacity = Math.min(1, parseFloat(element.style.opacity || 1) * 1.01);
+  async handleDesignAssistance(context) {
+    if (context.cognitiveLoad > 0.7 && context.task === 'design') {
+      const intervention = await this.interventionManager.generateIntervention({
+        context: 'design',
+        designComplexity: context.designMetrics,
+        currentPhase: context.designPhase,
+        userGoals: context.projectGoals
+      });
+      
+      return {
+        type: 'design_optimization',
+        recommendations: intervention.designSuggestions,
+        simplificationOptions: intervention.simplificationPaths,
+        inspirationSources: intervention.inspirationLinks
+      };
     }
-  });
-}
-```
-
-### Contextual Interventions
-
-```javascript
-// Apply different interventions based on UI element type
-function contextualInterventions(result, context) {
-  const { gamma, interveneType } = result.ui_update;
-  
-  if (context.type === 'text') {
-    // For text: adjust line spacing and letter spacing
-    context.element.style.lineHeight = `${1.2 + (1-gamma) * 0.3}em`;
-    context.element.style.letterSpacing = `${(1-gamma) * 2}px`;
-  } else if (context.type === 'interactive') {
-    // For buttons/links: reduce visual complexity
-    context.element.style.boxShadow = `0 0 ${gamma * 10}px rgba(0,0,0,0.1)`;
-    context.element.style.borderRadius = `${gamma * 8}px`;
-  } else if (context.type === 'media') {
-    // For images/videos: apply blur and desaturation
-    context.element.style.filter = `blur(${(1-gamma) * 3}px) saturate(${gamma})`;
   }
 }
 ```
 
-## Example 7: Performance Optimization
+### 🎵 Multi-Sensory Resonance
 
-### Optimized Frame Processing
-
-```javascript
-// Throttled processing for better performance
-class OptimizedRIA extends RIAEngine {
-  constructor(...args) {
-    super(...args);
-    this.lastProcessTime = 0;
-    this.processingInterval = 50;  // 20fps max
-    this.pendingFrame = null;
-  }
-  
-  process_frame_throttled(phiProxy, hrv = null) {
-    const now = Date.now();
-    
-    // Store the latest frame data
-    this.pendingFrame = { phiProxy, hrv, timestamp: now };
-    
-    // Only process if enough time has passed
-    if (now - this.lastProcessTime >= this.processingInterval) {
-      const result = this.process_frame(
-        this.pendingFrame.phiProxy, 
-        this.pendingFrame.hrv
-      );
-      this.lastProcessTime = now;
-      this.pendingFrame = null;
-      return result;
-    }
-    
-    return null;  // Skip this frame
-  }
-}
-```
-
-### Memory-Efficient History Management
+#### Adaptive Audio Feedback
 
 ```javascript
-// Circular buffer for efficient memory usage
-class CircularBuffer {
-  constructor(maxSize) {
-    this.buffer = new Array(maxSize);
-    this.size = 0;
-    this.head = 0;
-    this.maxSize = maxSize;
+// Multi-sensory resonance for reading enhancement
+class ReadingResonanceEnhancer {
+  constructor() {
+    this.resonanceManager = new MultiSensoryResonanceManager();
+    this.audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    this.isActive = false;
   }
   
-  push(item) {
-    this.buffer[this.head] = item;
-    this.head = (this.head + 1) % this.maxSize;
-    if (this.size < this.maxSize) {
-      this.size++;
+  async activateReadingResonance(readingContext) {
+    if (!this.isActive) {
+      this.isActive = true;
+      
+      // Calculate optimal frequency for reading
+      const optimalFreq = this.resonanceManager.calculateOptimalFrequency({
+        task: 'reading',
+        textComplexity: readingContext.complexity,
+        userState: readingContext.cognitiveState,
+        ambientNoise: readingContext.environmentalFactors
+      });
+      
+      // Generate binaural beats
+      this.generateBinauralBeats(optimalFreq.base, optimalFreq.offset);
+      
+      // Add subtle haptic feedback if available
+      if ('vibrate' in navigator) {
+        this.setupHapticReadingCues(readingContext);
+      }
     }
   }
   
-  toArray() {
-    if (this.size < this.maxSize) {
-      return this.buffer.slice(0, this.size);
-    }
+  generateBinauralBeats(baseFreq, offset) {
+    // Left ear
+    const leftOscillator = this.audioContext.createOscillator();
+    leftOscillator.frequency.setValueAtTime(baseFreq, this.audioContext.currentTime);
     
-    return [
-      ...this.buffer.slice(this.head),
-      ...this.buffer.slice(0, this.head)
-    ];
+    // Right ear with slight offset for binaural effect
+    const rightOscillator = this.audioContext.createOscillator();
+    rightOscillator.frequency.setValueAtTime(baseFreq + offset, this.audioContext.currentTime);
+    
+    // Create stereo panner
+    const leftPanner = this.audioContext.createStereoPanner();
+    leftPanner.pan.setValueAtTime(-1, this.audioContext.currentTime);
+    
+    const rightPanner = this.audioContext.createStereoPanner();
+    rightPanner.pan.setValueAtTime(1, this.audioContext.currentTime);
+    
+    // Connect and start
+    leftOscillator.connect(leftPanner).connect(this.audioContext.destination);
+    rightOscillator.connect(rightPanner).connect(this.audioContext.destination);
+    
+    leftOscillator.start();
+    rightOscillator.start();
+    
+    // Store for cleanup
+    this.currentOscillators = [leftOscillator, rightOscillator];
   }
   
-  get length() {
-    return this.size;
-  }
-}
-
-// Usage in RIA engine
-class MemoryOptimizedRIA extends RIAEngine {
-  constructor(...args) {
-    super(...args);
-    this.phiHistory = new CircularBuffer(100);
-  }
-  
-  process_frame(phiProxy, hrv = null) {
-    this.frameCount++;
-    this.phiHistory.push(phiProxy);
+  setupHapticReadingCues(readingContext) {
+    // Gentle haptic cues at paragraph boundaries
+    const paragraphs = document.querySelectorAll('p');
     
-    // Convert to array for computation
-    const historyArray = this.phiHistory.toArray();
-    const fi = this.compute_fi(historyArray, hrv);
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.8) {
+          // Subtle vibration at paragraph start
+          navigator.vibrate([10]);
+        }
+      });
+    }, { threshold: [0.8] });
     
-    // ... rest of processing
+    paragraphs.forEach(p => observer.observe(p));
   }
 }
 ```
 
-These examples demonstrate the flexibility and power of the RIA v1 prototype across different platforms and use cases. The system is designed to be modular and extensible, allowing for custom implementations while maintaining the core cognitive load reduction functionality.
+### 🧬 Antifragile Learning
+
+#### Stress-Adaptive Intelligence
+
+```javascript
+// Antifragile learning system that improves from cognitive failures
+class AntifragileAdaptation {
+  constructor() {
+    this.antifragileManager = new AntifragileManager();
+    this.failureHistory = [];
+    this.adaptationMetrics = new Map();
+  }
+  
+  recordCognitiveFailure(failureEvent) {
+    const failure = {
+      timestamp: Date.now(),
+      type: failureEvent.type,
+      context: failureEvent.context,
+      severity: failureEvent.severity,
+      recoveryTime: failureEvent.recoveryTime,
+      environmentalFactors: failureEvent.environment
+    };
+    
+    this.failureHistory.push(failure);
+    this.antifragileManager.processFailure(failure);
+    
+    // Trigger adaptation
+    this.adaptToFailurePattern(failure);
+  }
+  
+  adaptToFailurePattern(latestFailure) {
+    // Analyze failure patterns
+    const patterns = this.antifragileManager.analyzeFailurePatterns(
+      this.failureHistory.slice(-50) // Last 50 failures
+    );
+    
+    // Adapt intervention strategies
+    if (patterns.commonContext === 'debugging' && patterns.frequency > 0.3) {
+      // Debugging causes frequent failures - adapt strategy
+      this.adaptDebuggingSupport(patterns);
+    }
+    
+    if (patterns.timeOfDay && patterns.timeOfDay.peak) {
+      // Time-based adaptation
+      this.adaptToCircadianPatterns(patterns.timeOfDay);
+    }
+  }
+  
+  adaptDebuggingSupport(patterns) {
+    // Lower intervention threshold for debugging contexts
+    const newThreshold = Math.max(0.5, patterns.averageThreshold - 0.1);
+    
+    // Increase assistance frequency
+    const newFrequency = Math.min(1000, patterns.currentFrequency * 0.8);
+    
+    // Apply adaptations
+    this.antifragileManager.updateAdaptiveParameters({
+      context: 'debugging',
+      interventionThreshold: newThreshold,
+      analysisFrequency: newFrequency,
+      assistanceLevel: 'enhanced'
+    });
+  }
+  
+  buildCognitiveResilience() {
+    // Gradually increase stress tolerance
+    const resilienceMetrics = this.antifragileManager.calculateResilience();
+    
+    if (resilienceMetrics.improvementRate > 0.1) {
+      // User is adapting well - slightly increase challenge
+      this.antifragileManager.adjustResilienceTraining({
+        stressIncrement: 0.05,
+        adaptationSpeed: 'moderate',
+        supportLevel: 'reduced'
+      });
+    }
+  }
+}
+```
+
+## 🔧 Advanced Configuration Examples
+
+### Comprehensive System Configuration
+
+```javascript
+// Complete RIA Engine v2.1 configuration
+const riaConfig = {
+  // Core engine settings
+  core: {
+    processingMode: 'realtime',
+    analysisFrequency: 2000,
+    optimizationLevel: 'balanced', // 'performance' | 'balanced' | 'accuracy'
+    debugMode: false
+  },
+  
+  // Enhancement vector configuration
+  enhancements: {
+    generativeInterventions: {
+      enabled: true,
+      contextWindow: 1000,
+      interventionThreshold: 0.7,
+      adaptiveMode: true,
+      aiModel: 'gpt-4-turbo'
+    },
+    
+    multiSensoryResonance: {
+      enabled: true,
+      audioFeedback: {
+        binauralBeats: true,
+        ambientSounds: true,
+        adaptiveVolume: true
+      },
+      hapticFeedback: {
+        enabled: true,
+        intensity: 'medium',
+        patterns: ['reading', 'attention', 'break']
+      }
+    },
+    
+    antifragileMode: {
+      enabled: true,
+      learningRate: 0.01,
+      memoryWindow: 10000,
+      resilienceTraining: true,
+      adaptationThreshold: 0.05
+    }
+  },
+  
+  // Platform-specific settings
+  platforms: {
+    vscode: {
+      codeAnalysis: true,
+      debuggingSupport: true,
+      intellisenseIntegration: true,
+      workspaceOptimization: true
+    },
+    
+    figma: {
+      designComplexityAnalysis: true,
+      componentIntelligence: true,
+      creativeFlowOptimization: true,
+      performanceScaling: true
+    },
+    
+    browser: {
+      readingAssistance: true,
+      focusMode: true,
+      crossTabTracking: true,
+      contentOptimization: true
+    }
+  },
+  
+  // User personalization
+  user: {
+    profile: 'adaptive', // Will learn and adapt
+    cognitivePreferences: {
+      interventionStyle: 'subtle',
+      assistanceLevel: 'moderate',
+      privacyMode: 'anonymized'
+    },
+    
+    accessibility: {
+      reducedMotion: false,
+      highContrast: false,
+      screenReader: false,
+      keyboardNavigation: true
+    }
+  },
+  
+  // Analytics and research
+  analytics: {
+    enabled: true,
+    anonymization: true,
+    researchParticipation: true,
+    dataRetention: 30 // days
+  }
+};
+
+// Initialize with comprehensive configuration
+const riaEngine = new RIAEngine(riaConfig);
+await riaEngine.initialize();
+```
+
+### Dynamic Adaptation Example
+
+```javascript
+// Dynamic system adaptation based on usage patterns
+class DynamicRIAAdaptation {
+  constructor(riaEngine) {
+    this.riaEngine = riaEngine;
+    this.usagePatterns = new Map();
+    this.adaptationTimer = null;
+  }
+  
+  startAdaptiveMonitoring() {
+    // Analyze usage patterns every hour
+    this.adaptationTimer = setInterval(() => {
+      this.analyzeAndAdapt();
+    }, 3600000); // 1 hour
+  }
+  
+  analyzeAndAdapt() {
+    const currentContext = this.riaEngine.getCurrentContext();
+    const performance = this.riaEngine.getPerformanceMetrics();
+    
+    // Adapt based on effectiveness
+    if (performance.interventionEffectiveness < 0.6) {
+      this.adjustInterventionStrategy();
+    }
+    
+    // Adapt based on user behavior
+    if (performance.userEngagement < 0.7) {
+      this.reduceIntrusiveness();
+    }
+    
+    // Adapt based on cognitive improvement
+    if (performance.cognitiveImprovement > 0.2) {
+      this.incrementResilienceTraining();
+    }
+  }
+  
+  adjustInterventionStrategy() {
+    // Make interventions more targeted and less frequent
+    this.riaEngine.updateConfiguration({
+      enhancements: {
+        generativeInterventions: {
+          interventionThreshold: this.riaEngine.config.enhancements.generativeInterventions.interventionThreshold + 0.1,
+          contextWindow: Math.max(500, this.riaEngine.config.enhancements.generativeInterventions.contextWindow - 100)
+        }
+      }
+    });
+  }
+}
+```
+
+## 📊 Performance Monitoring Examples
+
+### Real-Time Performance Dashboard
+
+```javascript
+// Comprehensive performance monitoring
+class RIAPerformanceDashboard {
+  constructor(riaEngine) {
+    this.riaEngine = riaEngine;
+    this.metricsHistory = [];
+    this.setupDashboard();
+  }
+  
+  setupDashboard() {
+    // Create performance monitoring interface
+    this.createDashboardUI();
+    
+    // Start real-time metrics collection
+    this.startMetricsCollection();
+  }
+  
+  startMetricsCollection() {
+    setInterval(() => {
+      const metrics = this.collectCurrentMetrics();
+      this.metricsHistory.push(metrics);
+      this.updateDashboard(metrics);
+      
+      // Keep only last 1000 data points
+      if (this.metricsHistory.length > 1000) {
+        this.metricsHistory.shift();
+      }
+    }, 1000); // Every second
+  }
+  
+  collectCurrentMetrics() {
+    return {
+      timestamp: Date.now(),
+      
+      // Core performance
+      processingTime: this.riaEngine.getAverageProcessingTime(),
+      memoryUsage: this.riaEngine.getMemoryUsage(),
+      cpuUsage: this.riaEngine.getCPUUsage(),
+      
+      // Cognitive metrics
+      currentFractureIndex: this.riaEngine.getCurrentFractureIndex(),
+      interventionCount: this.riaEngine.getInterventionCount(),
+      adaptationRate: this.riaEngine.getAdaptationRate(),
+      
+      // Enhancement effectiveness
+      generativeEffectiveness: this.riaEngine.getGenerativeEffectiveness(),
+      resonanceEngagement: this.riaEngine.getResonanceEngagement(),
+      antifragileProgress: this.riaEngine.getAntifragileProgress(),
+      
+      // Platform-specific metrics
+      platformMetrics: this.riaEngine.getPlatformMetrics()
+    };
+  }
+  
+  generatePerformanceReport() {
+    const report = {
+      timeRange: {
+        start: this.metricsHistory[0]?.timestamp,
+        end: this.metricsHistory[this.metricsHistory.length - 1]?.timestamp
+      },
+      
+      performance: {
+        avgProcessingTime: this.calculateAverage('processingTime'),
+        maxMemoryUsage: this.calculateMax('memoryUsage'),
+        avgCPUUsage: this.calculateAverage('cpuUsage')
+      },
+      
+      cognitive: {
+        avgFractureIndex: this.calculateAverage('currentFractureIndex'),
+        totalInterventions: this.calculateSum('interventionCount'),
+        adaptationRate: this.calculateAverage('adaptationRate')
+      },
+      
+      effectiveness: {
+        generative: this.calculateAverage('generativeEffectiveness'),
+        resonance: this.calculateAverage('resonanceEngagement'),
+        antifragile: this.calculateTrend('antifragileProgress')
+      }
+    };
+    
+    return report;
+  }
+}
+```
+
+These examples demonstrate the comprehensive capabilities of RIA Engine v2.1 across all platforms and enhancement vectors, showing how to integrate, configure, and optimize the system for maximum cognitive enhancement effectiveness.
