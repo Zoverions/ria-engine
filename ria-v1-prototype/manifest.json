@@ -1,0 +1,15 @@
+{
+  "name": "RIA v1 Prototype",
+  "id": "ria-v1-prototype",
+  "api": "1.0.0",
+  "main": "code.js",
+  "ui": "ui.html",
+  "capabilities": [],
+  "enableProposedApi": false,
+  "enablePrivatePluginApi": false,
+  "build": "",
+  "documentAccess": "dynamic-page",
+  "networkAccess": {
+    "allowedDomains": []
+  }
+}
