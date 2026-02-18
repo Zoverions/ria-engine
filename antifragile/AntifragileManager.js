@@ -792,8 +792,126 @@ export class AntifragileManager extends EventEmitter {
     return commonFactors;
   }
   
-  findTemporalPatterns(fractures) { return []; } // Placeholder
-  findContextualTriggers(fractures) { return []; } // Placeholder
-  identifyUserVulnerabilities(fractures) { return []; } // Placeholder
-  findCriticalThreshold(preFrames, fractureFrame) { return 0.85; } // Placeholder
+  findTemporalPatterns(fractures) {
+    if (fractures.length < 3) return [];
+
+    const timestamps = fractures.map(f => f.timestamp).sort((a, b) => a - b);
+    const intervals = [];
+
+    for (let i = 1; i < timestamps.length; i++) {
+      intervals.push(timestamps[i] - timestamps[i - 1]);
+    }
+
+    // Check for periodicity
+    const meanInterval = intervals.reduce((sum, val) => sum + val, 0) / intervals.length;
+    const stdDev = Math.sqrt(intervals.reduce((sum, val) => sum + Math.pow(val - meanInterval, 2), 0) / intervals.length);
+
+    const patterns = [];
+
+    // If standard deviation is low relative to mean, it's periodic
+    if (stdDev < meanInterval * 0.2) {
+      patterns.push({
+        type: 'periodic_fracture',
+        interval: meanInterval,
+        confidence: 1 - (stdDev / meanInterval)
+      });
+    }
+
+    // Check for bursts
+    const burstThreshold = meanInterval * 0.5;
+    const bursts = intervals.filter(interval => interval < burstThreshold);
+
+    if (bursts.length > intervals.length * 0.3) {
+      patterns.push({
+        type: 'burst_pattern',
+        intensity: bursts.length / intervals.length,
+        confidence: 0.8
+      });
+    }
+
+    return patterns;
+  }
+
+  findContextualTriggers(fractures) {
+    const triggers = new Map();
+
+    fractures.forEach(f => {
+      const context = f.context;
+      const key = `${context.domain}:${context.task}`;
+      triggers.set(key, (triggers.get(key) || 0) + 1);
+    });
+
+    const total = fractures.length;
+    const significantTriggers = [];
+
+    triggers.forEach((count, key) => {
+      const frequency = count / total;
+      if (frequency > 0.3) {
+        const [domain, task] = key.split(':');
+        significantTriggers.push({
+          context: key,
+          domain,
+          task,
+          frequency,
+          count
+        });
+      }
+    });
+
+    return significantTriggers;
+  }
+
+  identifyUserVulnerabilities(fractures) {
+    const factors = this.state.userCognitiveProfile.personalityFactors;
+    const vulnerabilities = [];
+
+    if (factors.stressSensitivity > 0.7) {
+      vulnerabilities.push({
+        type: 'high_stress_sensitivity',
+        level: factors.stressSensitivity,
+        implication: 'Requires earlier stress mitigation'
+      });
+    }
+
+    if (factors.complexityTolerance < 0.3) {
+      vulnerabilities.push({
+        type: 'low_complexity_tolerance',
+        level: factors.complexityTolerance,
+        implication: 'Requires aggressive simplification'
+      });
+    }
+
+    if (factors.notificationSensitivity > 0.7) {
+      vulnerabilities.push({
+        type: 'notification_distractibility',
+        level: factors.notificationSensitivity,
+        implication: 'Requires strict notification filtering'
+      });
+    }
+
+    return vulnerabilities;
+  }
+
+  findCriticalThreshold(preFrames, fractureFrame) {
+    // Dynamic threshold detection
+    // Look for the point where acceleration spiked before the fracture
+    const fiValues = preFrames.map(f => f.fi || 0);
+    let maxAccel = 0;
+    let criticalIndex = -1;
+
+    for (let i = 2; i < fiValues.length; i++) {
+      const accel = fiValues[i] - 2 * fiValues[i - 1] + fiValues[i - 2];
+      if (accel > maxAccel) {
+        maxAccel = accel;
+        criticalIndex = i;
+      }
+    }
+
+    if (criticalIndex !== -1 && criticalIndex < fiValues.length) {
+      return fiValues[criticalIndex];
+    }
+
+    // Fallback to default
+    return this.config.fractureThreshold;
+  }
 }

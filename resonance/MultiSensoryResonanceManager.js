@@ -40,13 +40,15 @@ export class MultiSensoryResonanceManager extends EventEmitter {
     };
     
     this.state = {
-      currentSoundscape: null,
+      currentSoundscapeName: null,
+      activeSoundscape: null, // { gainNode, oscillators: [] }
+      fadingSoundscapes: [], // Array of soundscapes currently fading out
       audioContext: null,
-      oscillators: new Map(),
       hapticDevice: null,
       currentCadence: this.config.basePulseRate,
       lastFocusState: null,
-      resonanceActive: false
+      resonanceActive: false,
+      hapticInterval: null
     };
     
     this.harmonics = [1, 0.5, 0.33, 0.25, 0.2]; // Harmonic series ratios
@@ -93,6 +95,20 @@ export class MultiSensoryResonanceManager extends EventEmitter {
       this.masterGain.connect(this.state.audioContext.destination);
       this.masterGain.gain.value = this.config.volumeRange[0];
       
+      // Handle suspension
+      if (this.state.audioContext.state === 'suspended') {
+        console.log('AudioContext suspended, waiting for interaction');
+        const resumeHandler = () => {
+          this.state.audioContext.resume().then(() => {
+            console.log('AudioContext resumed');
+            window.removeEventListener('click', resumeHandler);
+            window.removeEventListener('keydown', resumeHandler);
+          });
+        };
+        window.addEventListener('click', resumeHandler);
+        window.addEventListener('keydown', resumeHandler);
+      }
+
     } catch (error) {
       console.warn('Audio context creation failed:', error.message);
       this.state.audioContext = this.createMockAudioContext();
@@ -154,6 +170,15 @@ export class MultiSensoryResonanceManager extends EventEmitter {
   }
   
   async updateAudioResonance(mode, fi, focusTrend) {
+    // Check context state and attempt resume if needed
+    if (this.state.audioContext && this.state.audioContext.state === 'suspended') {
+        try {
+            await this.state.audioContext.resume();
+        } catch (e) {
+            // Ignore resume errors (likely need user interaction)
+        }
+    }
+
     switch (mode) {
       case 'deep_flow':
         await this.generatePureTone();
@@ -248,25 +273,95 @@ export class MultiSensoryResonanceManager extends EventEmitter {
   }
   
   async transitionToSoundscape(name, createFn) {
-    if (this.state.currentSoundscape === name) return;
+    if (this.state.currentSoundscapeName === name) return;
+
+    // 1. Create new soundscape container
+    const newSoundscape = {
+        name,
+        oscillators: [],
+        gainNode: this.state.audioContext.createGain()
+    };
+    newSoundscape.gainNode.gain.value = 0; // Start silent
+    newSoundscape.gainNode.connect(this.masterGain);
+
+    // 2. Populate with oscillators (connected to soundscape gain, not master)
+    // We need to modify createOscillator/createFn slightly or adapt them here.
+    // Since createFn calls createOscillator which currently connects to masterGain,
+    // we need to intercept or change createOscillator to return disconnected/flexible nodes.
+    // For simplicity, let's redefine createOscillator context within this scope or passed arg.
+
+    // Better: redefine createOscillator to take a destination node
+    const createOscillatorForSoundscape = (frequency, type, destination) => {
+        const oscillator = this.state.audioContext.createOscillator();
+        const oscGain = this.state.audioContext.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.value = frequency;
+
+        oscillator.connect(oscGain);
+        oscGain.connect(destination);
+
+        // Attach gain control to oscillator for volume setting
+        oscillator._gainNode = oscGain;
+
+        return oscillator;
+    };
+
+    // Helper wrapper for the createFn to use the new creator
+    // We actually need to change how createFn works.
+    // But createFn is just a closure using `this.createOscillator`.
+    // I will override `this.createOscillator` temporarily or change the pattern.
+
+    // Let's change the pattern of `createFn`. It calls `this.createOscillator`.
+    // I'll update `createOscillator` to use a temporary target if set, or just return the node.
+    // But `createOscillator` connects to `masterGain`.
     
-    // Fade out current soundscape
-    await this.fadeOut();
+    // Strategy: Modify `createOscillator` in the class to support optional destination.
+    // But I can't easily change the `createFn` closures passed from other methods without changing those methods.
+    // Wait, the methods like `generatePureTone` call `this.createOscillator`.
+    // I can update `createOscillator` to check `this.state.targetGainNode`.
     
-    // Create new soundscape
+    this.state.targetGainNode = newSoundscape.gainNode;
     const oscillators = createFn();
+    this.state.targetGainNode = null; // Reset
     
-    // Store new oscillators
-    this.state.oscillators.clear();
-    oscillators.forEach((osc, index) => {
-      this.state.oscillators.set(`${name}_${index}`, osc);
-      osc.start();
-    });
+    newSoundscape.oscillators = oscillators;
     
-    // Fade in new soundscape
-    await this.fadeIn();
+    // Start oscillators
+    oscillators.forEach(osc => osc.start());
+
+    // 3. Fade in new soundscape
+    const now = this.state.audioContext.currentTime;
+    const duration = this.config.crossfadeTime / 1000;
+
+    newSoundscape.gainNode.gain.setValueAtTime(0, now);
+    newSoundscape.gainNode.gain.linearRampToValueAtTime(1.0, now + duration);
+
+    // 4. Fade out old soundscape
+    if (this.state.activeSoundscape) {
+        const oldSoundscape = this.state.activeSoundscape;
+        this.state.fadingSoundscapes.push(oldSoundscape);
+
+        oldSoundscape.gainNode.gain.setValueAtTime(oldSoundscape.gainNode.gain.value, now);
+        oldSoundscape.gainNode.gain.linearRampToValueAtTime(0, now + duration);
+
+        // Cleanup after fade
+        setTimeout(() => {
+            oldSoundscape.oscillators.forEach(osc => {
+                try { osc.stop(); } catch(e) {}
+                osc.disconnect();
+            });
+            oldSoundscape.gainNode.disconnect();
+
+            // Remove from fading list
+            const index = this.state.fadingSoundscapes.indexOf(oldSoundscape);
+            if (index > -1) this.state.fadingSoundscapes.splice(index, 1);
+
+        }, this.config.crossfadeTime);
+    }
     
-    this.state.currentSoundscape = name;
+    this.state.activeSoundscape = newSoundscape;
+    this.state.currentSoundscapeName = name;
   }
   
   createOscillator(frequency, type = 'sine') {
@@ -275,10 +370,13 @@ export class MultiSensoryResonanceManager extends EventEmitter {
     
     oscillator.type = type;
     oscillator.frequency.value = frequency;
-    gainNode.gain.value = 0; // Start silent for fade-in
+    gainNode.gain.value = 0; // Default silent
     
     oscillator.connect(gainNode);
-    gainNode.connect(this.masterGain);
+
+    // Connect to target (for soundscape) or master (fallback)
+    const destination = this.state.targetGainNode || this.masterGain;
+    gainNode.connect(destination);
     
     // Store gain node reference for volume control
     oscillator._gainNode = gainNode;
@@ -288,62 +386,36 @@ export class MultiSensoryResonanceManager extends EventEmitter {
   
   setOscillatorVolume(oscillator, volume) {
     if (oscillator._gainNode) {
-      oscillator._targetVolume = volume;
+        // Set volume immediately on the individual oscillator's gain
+        // The crossfade happens on the soundscape's master gain
+        oscillator._gainNode.gain.value = volume;
     }
   }
   
-  async fadeIn() {
-    return new Promise(resolve => {
-      const startTime = this.state.audioContext.currentTime;
-      const duration = this.config.crossfadeTime / 1000;
-      
-      this.state.oscillators.forEach(oscillator => {
-        if (oscillator._targetVolume && oscillator._gainNode) {
-          oscillator._gainNode.gain.setValueAtTime(0, startTime);
-          oscillator._gainNode.gain.linearRampToValueAtTime(
-            oscillator._targetVolume, 
-            startTime + duration
-          );
-        }
-      });
-      
-      setTimeout(resolve, this.config.crossfadeTime);
-    });
-  }
-  
-  async fadeOut() {
-    return new Promise(resolve => {
-      const startTime = this.state.audioContext.currentTime;
-      const duration = this.config.crossfadeTime / 1000;
-      
-      this.state.oscillators.forEach(oscillator => {
-        if (oscillator._gainNode) {
-          oscillator._gainNode.gain.setValueAtTime(
-            oscillator._gainNode.gain.value, 
-            startTime
-          );
-          oscillator._gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
-        }
-      });
-      
-      setTimeout(() => {
-        // Stop and clean up oscillators
-        this.state.oscillators.forEach(oscillator => {
-          try {
-            oscillator.stop();
-          } catch (e) {
-            // Oscillator may already be stopped
-          }
-        });
-        this.state.oscillators.clear();
-        resolve();
-      }, this.config.crossfadeTime);
-    });
-  }
+  // Deprecated/Unused fadeIn/fadeOut methods (replaced by transition logic)
+  async fadeIn() { return Promise.resolve(); }
+  async fadeOut() { return Promise.resolve(); }
   
   async fadeToSilence() {
-    await this.fadeOut();
-    this.state.currentSoundscape = null;
+    if (!this.state.activeSoundscape) return;
+
+    const now = this.state.audioContext.currentTime;
+    const duration = this.config.crossfadeTime / 1000;
+
+    const oldSoundscape = this.state.activeSoundscape;
+    this.state.activeSoundscape = null;
+    this.state.currentSoundscapeName = null;
+
+    oldSoundscape.gainNode.gain.setValueAtTime(oldSoundscape.gainNode.gain.value, now);
+    oldSoundscape.gainNode.gain.linearRampToValueAtTime(0, now + duration);
+
+    setTimeout(() => {
+        oldSoundscape.oscillators.forEach(osc => {
+            try { osc.stop(); } catch(e) {}
+            osc.disconnect();
+        });
+        oldSoundscape.gainNode.disconnect();
+    }, this.config.crossfadeTime);
   }
   
   async updateHapticResonance(mode, interactionCadence) {
@@ -415,7 +487,12 @@ export class MultiSensoryResonanceManager extends EventEmitter {
     if (!this.state.hapticDevice || !this.state.hapticDevice.supported) return;
     
     // Convert intensity to vibration duration (10-50ms)
-    const duration = Math.round(10 + intensity * 40);
+    // Validate intensity
+    const safeIntensity = Math.max(0, Math.min(1, intensity));
+    const duration = Math.round(10 + safeIntensity * 40);
+
+    // Validate duration (must be positive integer)
+    if (duration <= 0 || !Number.isInteger(duration)) return;
     
     try {
       this.state.hapticDevice.vibrate(duration);
@@ -470,6 +547,7 @@ export class MultiSensoryResonanceManager extends EventEmitter {
       currentTime: 0,
       destination: {},
       state: 'suspended',
+      resume: async () => {},
       suspend: async () => {}
     };
   }
@@ -480,7 +558,7 @@ export class MultiSensoryResonanceManager extends EventEmitter {
   createMockHapticDevice() {
     return {
       vibrate: (pattern) => {
-        console.log(`Mock haptic vibration: ${pattern}ms`);
+        // console.log(`Mock haptic vibration: ${pattern}ms`);
       },
       supported: false
     };
@@ -501,7 +579,7 @@ export class MultiSensoryResonanceManager extends EventEmitter {
     return {
       enabled: this.config.enabled,
       resonanceActive: this.state.resonanceActive,
-      currentSoundscape: this.state.currentSoundscape,
+      currentSoundscape: this.state.currentSoundscapeName,
       currentCadence: this.state.currentCadence,
       audioEnabled: this.config.audioEnabled,
       hapticEnabled: this.config.hapticEnabled,
