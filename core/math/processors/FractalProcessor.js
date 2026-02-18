@@ -257,7 +257,7 @@ export class FractalProcessor {
     // Try different window sizes
     for (let windowSize = this.config.dfa.minWindowSize; 
          windowSize <= Math.min(this.config.dfa.maxWindowSize, n / 4); 
-         windowSize = Math.floor(windowSize * 1.2)) {
+         windowSize = Math.max(windowSize + 1, Math.floor(windowSize * 1.2))) {
       
       const fluctuation = this.computeDFAFluctuation(integrated, windowSize);
       windowSizes.push(windowSize);

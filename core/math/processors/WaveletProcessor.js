@@ -629,21 +629,81 @@ export class WaveletProcessor {
     return { centroid, spread };
   }
 
-  // Placeholder implementations for advanced methods
   findTimeFrequencyRidges(scalogram) {
-    return { count: 0, ridges: [] };
+    if (!scalogram || scalogram.length === 0) return { count: 0, ridges: [] };
+
+    const n = scalogram[0].magnitude.length;
+    const numScales = scalogram.length;
+    const ridges = [];
+
+    // For each time point, find the scale with maximum magnitude
+    for (let t = 0; t < n; t++) {
+      let maxMag = 0;
+      let maxScaleIndex = -1;
+
+      for (let s = 0; s < numScales; s++) {
+        const mag = scalogram[s].magnitude[t];
+        if (mag > maxMag) {
+          maxMag = mag;
+          maxScaleIndex = s;
+        }
+      }
+
+      if (maxScaleIndex !== -1) {
+        ridges.push({
+          time: t,
+          scale: scalogram[maxScaleIndex].scale,
+          frequency: scalogram[maxScaleIndex].frequency,
+          magnitude: maxMag
+        });
+      }
+    }
+
+    return { count: ridges.length, ridges };
   }
 
   computeInstantaneousFrequency(scalogram) {
-    return { avg: 0, variation: 0 };
+    const ridges = this.findTimeFrequencyRidges(scalogram);
+    const frequencies = ridges.ridges.map(r => r.frequency);
+
+    const avg = frequencies.reduce((sum, f) => sum + f, 0) / frequencies.length || 0;
+    const variance = frequencies.reduce((sum, f) => sum + Math.pow(f - avg, 2), 0) / frequencies.length || 0;
+
+    return { avg, variation: Math.sqrt(variance), trajectory: frequencies };
   }
 
   computeFrequencyBandwidth(scalogram) {
-    return 0;
+    if (!scalogram || scalogram.length === 0) return 0;
+
+    const freqSpread = this.computeFrequencySpread(scalogram);
+    return freqSpread.spread;
   }
 
   computeTimeFrequencyConcentration(scalogram) {
-    return 0;
+    // Using Shannon entropy of the normalized time-frequency distribution
+    let totalEnergy = 0;
+    const flattened = [];
+
+    scalogram.forEach(scaleData => {
+      scaleData.power.forEach(p => {
+        totalEnergy += p;
+        flattened.push(p);
+      });
+    });
+
+    if (totalEnergy === 0) return 0;
+
+    let entropy = 0;
+    for (const p of flattened) {
+      if (p > 0) {
+        const prob = p / totalEnergy;
+        entropy -= prob * Math.log2(prob);
+      }
+    }
+
+    // Normalize by log(N*M) where N is time points and M is scales
+    const maxEntropy = Math.log2(flattened.length);
+    return 1 - (entropy / maxEntropy); // Higher value means more concentrated
   }
 
   computeSignalStats(signal) {
@@ -654,15 +714,77 @@ export class WaveletProcessor {
   }
 
   findDominantFeatures(signal) {
-    return { peaks: 0, valleys: 0 };
+    let peaks = 0;
+    let valleys = 0;
+
+    for (let i = 1; i < signal.length - 1; i++) {
+      if (signal[i] > signal[i-1] && signal[i] > signal[i+1]) peaks++;
+      if (signal[i] < signal[i-1] && signal[i] < signal[i+1]) valleys++;
+    }
+
+    return { peaks, valleys, total: peaks + valleys };
   }
 
   computeCrossLevelCorrelation(decomposition) {
-    return { correlation: 0 };
+    if (decomposition.length < 2) return { correlation: 0 };
+
+    // Compute average correlation between adjacent levels' details
+    let totalCorr = 0;
+    let count = 0;
+
+    for (let i = 0; i < decomposition.length - 1; i++) {
+      const detail1 = decomposition[i].detail;
+      const detail2 = decomposition[i+1].detail;
+
+      // Need to upsample detail2 to match detail1 length if needed, but here they might be different lengths
+      // Simple approach: correlation of the overlapping part or resizing?
+      // DWT usually halves length each level. So detail2 is half length of detail1.
+      // Upsample detail2 by repeating or interpolating.
+
+      const upsampled = [];
+      for (const val of detail2) {
+        upsampled.push(val, val); // Simple repeat
+      }
+
+      const len = Math.min(detail1.length, upsampled.length);
+
+      // Compute correlation
+      let sumxy = 0, sumx = 0, sumy = 0, sumx2 = 0, sumy2 = 0;
+
+      for (let j = 0; j < len; j++) {
+        sumxy += detail1[j] * upsampled[j];
+        sumx += detail1[j];
+        sumy += upsampled[j];
+        sumx2 += detail1[j] * detail1[j];
+        sumy2 += upsampled[j] * upsampled[j];
+      }
+
+      const num = len * sumxy - sumx * sumy;
+      const den = Math.sqrt((len * sumx2 - sumx * sumx) * (len * sumy2 - sumy * sumy));
+
+      if (den !== 0) {
+        totalCorr += Math.abs(num / den); // Use absolute correlation
+        count++;
+      }
+    }
+
+    return { correlation: count > 0 ? totalCorr / count : 0 };
   }
 
   analyzeHierarchicalStructure(decomposition) {
-    return { structure: 'balanced' };
+    // Check energy decay across levels
+    const energies = decomposition.map(d =>
+      d.detail.reduce((s, v) => s + v*v, 0)
+    );
+
+    let decreasing = 0;
+    for (let i = 0; i < energies.length - 1; i++) {
+      if (energies[i] > energies[i+1]) decreasing++;
+    }
+
+    if (decreasing === energies.length - 1) return { structure: 'regular_decay' };
+    if (decreasing === 0) return { structure: 'inverse_decay' };
+    return { structure: 'mixed' };
   }
 
   computeWaveletEntropy(decomposition, type) {
@@ -690,16 +812,23 @@ export class WaveletProcessor {
   }
 
   computeEnergyCorrelation(cwtFeatures, dwtFeatures) {
-    // Simplified correlation measure
-    return 0.5;
+    // Correlation between CWT total energy and DWT total energy is trivial (should be high)
+    // Let's correlate spectral entropy from CWT (concentration) and DWT (entropyDetail)
+    // This is a simplified proxy
+    const cwtEntropy = 1 - cwtFeatures.localization.frequencySpread.spread; // Inverse spread as proxy
+    const dwtEntropy = 1 / (1 + dwtFeatures.entropyDetail); // Inverse entropy
+
+    // Since we only have single values per frame, this isn't a "correlation" in the statistical sense
+    // but a similarity measure.
+    return 1 - Math.abs(cwtEntropy - dwtEntropy);
   }
 
   computeFrequencyConsistency(cwtFeatures, dwtFeatures) {
-    return 0.7;
+    return 0.7; // Still a placeholder as it requires complex mapping between scales and levels
   }
 
   computeMultiResolutionCoherence(cwtFeatures, dwtFeatures) {
-    return 0.6;
+    return 0.6; // Placeholder
   }
 
   checkEnergyConservation(cwtEnergy, dwtEnergy) {
